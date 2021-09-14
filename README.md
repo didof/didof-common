@@ -35,16 +35,11 @@ See [official docs](https://developer.mozilla.org/en-US/docs/Web/API/Intersectio
 
 - **in**: dispatched for each entry, triggered when the entry enters in view. Brings as payload the entry itself.
 - **out**: like previous, but triggered when the entry slips out of view
-- **update**: emitted when any props (only _threshold_ right now) is changed. Brings as payload the following structure:
-
-```js
-{
-    name,
-    currentValue,
-    oldValue,
-}
-```
-
+- **update**: emitted when any props (only _threshold_ right now) is changed. Brings as payload the following structure: `{ name, currentValue, oldValue }`
 - **disconnect**: literally the last thing the component emits before being unmounted.
 
 ---
+
+```
+
+```
