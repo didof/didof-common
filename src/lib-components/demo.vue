@@ -1,7 +1,12 @@
 <template>
-  <MultiLevel :items="items" :gap="gap" disposition="linear:ltr">
+  <MultiLevel
+    disposition="linear:ltr"
+    :items="items"
+    :gap="gap"
+    :perspective="1000"
+  >
     <template #default="slotProps">
-      <div v-box>
+      <div v-box v-center>
         {{ slotProps.item.name }}
       </div>
     </template>
@@ -10,23 +15,18 @@
 
 <script>
 import { defineComponent, ref } from 'vue'
-// import IntersectionObserver from './IntersectionObserver.vue'
-import MultiLevel from './MultiLevel.vue'
+import * as components from './index'
 
 export default defineComponent({
   name: 'demo',
-  components: {
-    // IntersectionObserver,
-    MultiLevel,
-  },
+  components: registerComponents(),
   setup() {
     const items = [1, 2, 3, 4, 5, 6].map(index => ({
       name: index,
     }))
 
     const refItems = ref(items)
-
-    const refGap = ref(10)
+    const refGap = ref(300)
 
     return {
       items: refItems,
@@ -34,10 +34,10 @@ export default defineComponent({
     }
   },
 })
-</script>
 
-<style scoped>
-#demo {
-  height: 100vh;
+function registerComponents() {
+  return Object.entries(components).reduce(
+    (acc, [name, component]) => (acc[name] = component)
+  )
 }
-</style>
+</script>
