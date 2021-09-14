@@ -5,12 +5,6 @@
 </template>
 
 <script type="text/javascript">
-/**
- * <IntersectionObserver :threshold="[0.5, 1]" @in @out @update>
-        observed
-    </IntersectionObserver>
- */
-
 import {
   defineComponent,
   ref,
