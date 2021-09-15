@@ -9,7 +9,8 @@
     >
       <template #default="slotProps">
         <div v-center class="box">
-          <img :src="slotProps.item.name" />
+          {{ slotProps.item.name }}
+          <!-- <img :src="slotProps.item.name" /> -->
         </div>
       </template>
     </MultiLevel>
@@ -27,7 +28,8 @@ export default defineComponent({
   setup() {
     const items = ref(
       [1, 2, 3, 4, 5, 6, 7, 8, 9].map(index => ({
-        name: `https://picsum.photos/seed/${index}/200`,
+        // name: `https://picsum.photos/seed/${index}/200`,
+        name: index,
       }))
     )
 
@@ -49,6 +51,7 @@ export default defineComponent({
 }
 
 .box {
+  background: grey;
   width: 200px;
   height: 200px;
 }
