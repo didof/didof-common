@@ -18,7 +18,7 @@
 </template>
 
 <script>
-import { defineComponent, ref, toRef } from 'vue'
+import { defineComponent, toRef } from 'vue'
 import PerspectiveBox from '../PerspectiveBox.vue'
 import * as dispositions from './dispositions/index'
 import { registerComponents } from '../../utils/register'

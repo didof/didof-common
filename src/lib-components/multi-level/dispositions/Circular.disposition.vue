@@ -1,9 +1,17 @@
 <template>
-  <InteserctionObserver :threshold="threshold" @in="inView" @out="outView">
+  <InteserctionObserver
+    v-if="useIntersectionObserver"
+    :threshold="threshold"
+    @in="inView"
+    @out="outView"
+  >
     <div ref="el">
       <slot></slot>
     </div>
   </InteserctionObserver>
+  <div v-else ref="el">
+    <slot></slot>
+  </div>
 </template>
 
 <script>
@@ -26,8 +34,6 @@ export default defineComponent({
     // extract radius from modifiers circular:<radius>:clockwise-100
     //                                      :int     :sense    -intervalTime
     const circle = {
-      width: 500,
-      height: 500,
       radius: 250,
       center: {
         x: 250,
@@ -54,6 +60,7 @@ export default defineComponent({
     return {
       el,
       threshold,
+      useIntersectionObserver: modifier.value !== '',
       inView,
       outView,
     }
@@ -104,15 +111,17 @@ export default defineComponent({
       let interval
       let friction = 1
 
+      const baseVelocity = 0.01
+
       switch (modifier.value) {
         case 'clockwise':
           timeTick = function() {
-            time.value += 0.01 * friction
+            time.value += baseVelocity * friction
           }
           break
         case 'anticlockwise':
           timeTick = function() {
-            time.value -= 0.01 * friction
+            time.value -= baseVelocity * friction
           }
           break
         default:
@@ -122,22 +131,42 @@ export default defineComponent({
       const timer = {
         start() {
           clearInterval(interval)
-          friction = 1
-          interval = setInterval(() => {
-            timeTick()
-            paintChildren(children)
-          }, 100)
+          accelerate(() => {
+            interval = setInterval(() => {
+              timeTick()
+              paintChildren(children)
+            }, 100)
+          })
         },
-        pause(painter) {
+        pause() {
           clearInterval(interval)
-          if (painter) animateWithFriction(painter)
+          decelerate()
         },
         stop() {
           clearInterval(interval)
         },
       }
 
-      function animateWithFriction(painter) {
+      function accelerate(cb) {
+        repeat(10)
+
+        function repeat(step) {
+          setTimeout(() => {
+            if (step === 0) {
+              clearInterval(interval)
+              cb()
+              return
+            }
+
+            friction += 0.01
+            timeTick()
+            paintChildren(children)
+            repeat(--step)
+          }, 100)
+        }
+      }
+
+      function decelerate() {
         repeat(10)
 
         function repeat(step) {
@@ -147,9 +176,9 @@ export default defineComponent({
               return
             }
 
-            friction -= 0.1
+            friction -= 0.01
             timeTick()
-            painter()
+            paintChildren(children)
             repeat(--step)
           }, 100)
         }
