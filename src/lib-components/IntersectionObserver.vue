@@ -1,7 +1,7 @@
 <template>
-  <div ref="observed">
+  <span ref="observed">
     <slot></slot>
-  </div>
+  </span>
 </template>
 
 <script type="text/javascript">
@@ -61,3 +61,9 @@ export default defineComponent({
   },
 })
 </script>
+
+<style scoped>
+span {
+  display: inline-block;
+}
+</style>

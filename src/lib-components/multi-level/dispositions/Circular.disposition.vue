@@ -1,14 +1,18 @@
 <template>
-  <div ref="el">
-    <slot></slot>
-  </div>
+  <InteserctionObserver :threshold="threshold" @in="inView" @out="outView">
+    <div ref="el">
+      <slot></slot>
+    </div>
+  </InteserctionObserver>
 </template>
 
 <script>
-import { defineComponent, ref, toRefs, onMounted } from 'vue'
+import { defineComponent, ref, toRefs, onMounted, onBeforeUnmount } from 'vue'
+import InteserctionObserver from '../../IntersectionObserver.vue'
 
 export default defineComponent({
   name: 'circular-disposition',
+  components: { InteserctionObserver },
   props: {
     modifier: {
       type: String,
@@ -17,31 +21,10 @@ export default defineComponent({
   },
   setup(props, context) {
     const { modifier } = toRefs(props)
+    const [time, timer] = initTimer(modifier)
 
-    function getT(modifier) {
-      const time = ref(1)
-      let timeTick
-
-      switch (modifier.value) {
-        case 'clockwise':
-          timeTick = function() {
-            time.value += 0.01
-          }
-          break
-        case 'anticlockwise':
-          timeTick = function() {
-            time.value -= 0.01
-          }
-          break
-        default:
-          timeTick = function() {}
-      }
-
-      return [time, timeTick]
-    }
-
-    const [time, timeTick] = getT(modifier)
-
+    // extract radius from modifiers circular:<radius>:clockwise-100
+    //                                      :int     :sense    -intervalTime
     const circle = {
       width: 500,
       height: 500,
@@ -52,12 +35,8 @@ export default defineComponent({
       },
     }
 
-    /**
-     * Può aver senso mettere le posizioni in un reactive?
-     * Come gestisco che si riaggiornino da sole quando cambiano?
-     */
-
     const el = ref(null)
+    const threshold = ref([1])
     let children
     const baseAngle = calculateBaseAngle(
       context.slots.default()[0].children.length
@@ -68,10 +47,16 @@ export default defineComponent({
       paintChildren(children)
     })
 
-    setInterval(() => {
-      timeTick()
-      paintChildren(children)
-    }, 100)
+    onBeforeUnmount(() => {
+      timer.stop()
+    })
+
+    return {
+      el,
+      threshold,
+      inView,
+      outView,
+    }
 
     function retrieveChildren(childNodes) {
       return Array.from(childNodes)
@@ -113,8 +98,72 @@ export default defineComponent({
       return (Math.PI * 2) / childrenAmount
     }
 
-    return {
-      el,
+    function initTimer(modifier) {
+      const time = ref(1)
+      let timeTick
+      let interval
+      let friction = 1
+
+      switch (modifier.value) {
+        case 'clockwise':
+          timeTick = function() {
+            time.value += 0.01 * friction
+          }
+          break
+        case 'anticlockwise':
+          timeTick = function() {
+            time.value -= 0.01 * friction
+          }
+          break
+        default:
+          timeTick = function() {}
+      }
+
+      const timer = {
+        start() {
+          clearInterval(interval)
+          friction = 1
+          interval = setInterval(() => {
+            timeTick()
+            paintChildren(children)
+          }, 100)
+        },
+        pause(painter) {
+          clearInterval(interval)
+          if (painter) animateWithFriction(painter)
+        },
+        stop() {
+          clearInterval(interval)
+        },
+      }
+
+      function animateWithFriction(painter) {
+        repeat(10)
+
+        function repeat(step) {
+          setTimeout(() => {
+            if (step === 0) {
+              clearInterval(interval)
+              return
+            }
+
+            friction -= 0.1
+            timeTick()
+            painter()
+            repeat(--step)
+          }, 100)
+        }
+      }
+
+      return [time, timer]
+    }
+
+    function inView() {
+      timer.start()
+    }
+
+    function outView() {
+      timer.pause(() => paintChildren(children))
     }
   },
 })
