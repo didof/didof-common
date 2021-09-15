@@ -6,7 +6,11 @@
       </slot>
     </div> -->
     <div v-if="items">
-      <component :is="component" :modifier="modifier">
+      <component
+        :is="component"
+        :modifier="modifier"
+        :perspective="perspective"
+      >
         <div v-for="(item, index) in items" :key="index" class="min-content">
           <PerspectiveBox :perspective="perspective" :gap="-(gap * index)">
             <slot :item="item" :index="index"></slot>

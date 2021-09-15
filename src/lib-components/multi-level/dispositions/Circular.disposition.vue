@@ -27,8 +27,13 @@ export default defineComponent({
       type: String,
       default: '',
     },
+    perspective: {
+      type: Number,
+      required: true,
+    },
   },
   setup(props, context) {
+    const { perspective } = toRefs(props)
     const [rotation, msToRevolution] = readModifier(props)
 
     function readModifier(props) {
@@ -123,8 +128,8 @@ export default defineComponent({
           const x = radius + cos - width / 2
           const y = radius + sin - height / 2
 
-          const a = -Math.atan(sin / 1000) * 100
-          const b = Math.atan(cos / 1000) * 100
+          const a = -Math.atan(sin / perspective.value) * 100
+          const b = Math.atan(cos / perspective.value) * 100
 
           child.style.transform = `translateX(${x}px) translateY(${y}px) rotateX(${a}deg) rotateY(${b}deg)`
         })
