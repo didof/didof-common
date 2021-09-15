@@ -8,6 +8,7 @@ const app = createApp(Dev)
 app.use(DidofCommon.components)
 app.use(DidofCommon.directives)
 
-// app.directive()
+document.body.style.width = '100vw'
+document.body.style.height = '100vh'
 
 app.mount('#app')

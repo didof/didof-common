@@ -6,8 +6,8 @@
       </slot>
     </div> -->
     <div v-if="items">
-      <component :is="disposition.component" :direction="disposition.direction">
-        <div v-for="(item, index) in items" :key="index">
+      <component :is="component" :modifier="modifier">
+        <div v-for="(item, index) in items" :key="index" class="min-content">
           <PerspectiveBox :gap="-(gap * index)" :perspective="perspective">
             <slot :item="item" :index="index"></slot>
           </PerspectiveBox>
@@ -18,36 +18,32 @@
 </template>
 
 <script>
-import { defineComponent, toRef } from 'vue'
-import PerspectiveBox from './PerspectiveBox.vue'
-import LinearDisposition from './LinearDisposition.vue'
+import { defineComponent, ref, toRef } from 'vue'
+import PerspectiveBox from '../PerspectiveBox.vue'
+import * as dispositions from './dispositions/index'
+import { registerComponents } from '../../utils/register'
 
 export default defineComponent({
   name: 'multi-level',
   props: ['levels', 'items', 'gap', 'perspective'],
-  components: { PerspectiveBox, LinearDisposition },
+  components: { PerspectiveBox, ...registerComponents(dispositions) },
   setup(props, context) {
+    const { component, modifier } = getDispositionComponent()
     const gap = toRef(props, 'gap')
-
-    const disposition = getDispositionComponent()
 
     return {
       gap,
-      disposition,
+      component,
+      modifier,
     }
 
     function getDispositionComponent() {
-      const [type, direction] = context.attrs.disposition.split(':')
-      let component
+      let [type, modifier] = context.attrs.disposition.split(':')
+      if (!type) type = 'linear'
 
-      switch (type) {
-        case 'linear':
-        default:
-          component = LinearDisposition
-          break
-      }
+      const component = dispositions[type]
 
-      return { component, direction }
+      return { component, modifier }
     }
 
     // const { levels, items } = toRefs(props)
@@ -88,3 +84,10 @@ export default defineComponent({
     const refItems = ref(items)
  */
 </script>
+
+<style scoped>
+.min-content {
+  width: min-content;
+  height: min-content;
+}
+</style>

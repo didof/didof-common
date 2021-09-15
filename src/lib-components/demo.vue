@@ -1,6 +1,6 @@
 <template>
   <MultiLevel
-    disposition="linear:ltr"
+    disposition="circular:clockwise"
     :items="items"
     :gap="gap"
     :perspective="1000"
@@ -16,12 +16,13 @@
 <script>
 import { defineComponent, ref } from 'vue'
 import * as components from './index'
+import { registerComponents } from '../utils/register'
 
 export default defineComponent({
   name: 'demo',
-  components: registerComponents(),
+  components: registerComponents(components),
   setup() {
-    const items = [1, 2, 3, 4, 5, 6].map(index => ({
+    const items = new Array(10).fill('test').map(index => ({
       name: index,
     }))
 
@@ -34,10 +35,4 @@ export default defineComponent({
     }
   },
 })
-
-function registerComponents() {
-  return Object.entries(components).reduce(
-    (acc, [name, component]) => (acc[name] = component)
-  )
-}
 </script>

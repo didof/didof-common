@@ -9,14 +9,14 @@ export default defineComponent({
 </script>
 
 <template>
-  <div id="app" v-center>
+  <div id="app" v-center v-height>
     <Demo />
   </div>
 </template>
 
 <style scoped>
 #app {
-  width: 100vw;
-  height: 100vh;
+  width: 100%;
+  height: 100%;
 }
 </style>

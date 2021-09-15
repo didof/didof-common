@@ -10,22 +10,22 @@ import { defineComponent, ref, toRef } from 'vue'
 export default defineComponent({
   name: 'linear-disposition',
   props: {
-    direction: {
+    modifier: {
       type: String,
       default: 'ltr',
     },
   },
   setup(props) {
-    const direction = toRef(props, 'direction')
+    const modifier = toRef(props, 'modifier')
 
-    const directionMap = {
+    const modifierMap = {
       ltr: 'row',
       rtl: 'row-reverse',
       ttb: 'column',
       btt: 'column-reverse',
     }
 
-    const flexDirection = ref(directionMap[direction.value])
+    const flexDirection = ref(modifierMap[modifier.value])
 
     return {
       flexDirection,
