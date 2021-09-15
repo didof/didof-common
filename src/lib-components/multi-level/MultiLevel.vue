@@ -11,6 +11,7 @@
         :modifier="modifier"
         :perspective="perspective"
         :sizes="sizes"
+        :gap="gap"
       >
         <div v-for="(item, index) in items" :key="index" class="min-content">
           <PerspectiveBox :perspective="perspective" :gap="-(gap * index)">

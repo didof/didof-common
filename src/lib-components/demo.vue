@@ -4,8 +4,8 @@
       disposition="circular:clockwise-5000"
       :items="items"
       :gap="gap"
-      :perspective="1000"
-      :sizes="300"
+      :perspective="perspective"
+      :sizes="200"
     >
       <template #default="slotProps">
         <div v-box v-center>
@@ -25,16 +25,18 @@ export default defineComponent({
   name: 'demo',
   components: registerComponents(components),
   setup() {
-    const items = [1, 2, 3, 4, 5, 6].map(index => ({
+    const itemsList = [1, 2, 3].map(index => ({
       name: index,
     }))
 
-    const refItems = ref(items)
-    const refGap = ref(300)
+    const perspective = ref(2000)
+    const items = ref(itemsList)
+    const gap = ref(1000)
 
     return {
-      items: refItems,
-      gap: refGap,
+      items,
+      gap,
+      perspective,
     }
   },
 })
@@ -42,6 +44,6 @@ export default defineComponent({
 
 <style scoped>
 #demo {
-  margin-top: 200px;
+  margin: 200px;
 }
 </style>

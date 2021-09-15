@@ -35,9 +35,13 @@ export default defineComponent({
       type: Number,
       default: null,
     },
+    gap: {
+      type: Number,
+      required: true,
+    },
   },
   setup(props, context) {
-    const { perspective, sizes: radius } = toRefs(props)
+    const { perspective, sizes: radius, gap } = toRefs(props)
     const [rotation, msToRevolution] = readModifier(props)
 
     // TODO is readonly. Can the provider/injector pattern solve this?
@@ -125,7 +129,7 @@ export default defineComponent({
       const angleIncrement = (Math.PI * 2) / stepsToRevolution
 
       return function paint(et = 0) {
-        children.forEach(child => {
+        children.forEach((child, index) => {
           const { width, height } = child.sizes
 
           if (isClockwise) child.angle += et * angleIncrement
@@ -137,8 +141,10 @@ export default defineComponent({
           const x = radius.value + cos - width / 2
           const y = radius.value + sin - height / 2
 
-          const a = -Math.atan(sin / perspective.value) * 100
-          const b = Math.atan(cos / perspective.value) * 100
+          const distance = perspective.value + gap.value * index
+
+          const a = -Math.atan(sin / distance) * 500
+          const b = Math.atan(cos / distance) * 500
 
           child.style.transform = `translateX(${x}px) translateY(${y}px) rotateX(${a}deg) rotateY(${b}deg)`
         })
