@@ -143,8 +143,8 @@ export default defineComponent({
 
           const distance = perspective.value + gap.value * index
 
-          const a = -Math.atan(sin / distance) * 500
-          const b = Math.atan(cos / distance) * 500
+          const a = -Math.atan(sin / distance) * (perspective.value / 10)
+          const b = Math.atan(cos / distance) * (perspective.value / 10)
 
           child.style.transform = `translateX(${x}px) translateY(${y}px) rotateX(${a}deg) rotateY(${b}deg)`
         })

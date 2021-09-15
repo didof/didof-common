@@ -25,12 +25,13 @@ export default defineComponent({
   name: 'demo',
   components: registerComponents(components),
   setup() {
-    const itemsList = [1, 2, 3].map(index => ({
-      name: index,
-    }))
+    const items = ref(
+      [1, 2, 3].map(index => ({
+        name: index,
+      }))
+    )
 
-    const perspective = ref(2000)
-    const items = ref(itemsList)
+    const perspective = ref(800)
     const gap = ref(1000)
 
     return {
