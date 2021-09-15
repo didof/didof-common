@@ -3,7 +3,6 @@
     v-if="useIntersectionObserver"
     :threshold="threshold"
     @in="inView"
-    @out="outView"
   >
     <div ref="el">
       <slot></slot>
@@ -17,6 +16,7 @@
 <script>
 import { defineComponent, ref, toRefs, onMounted, onBeforeUnmount } from 'vue'
 import InteserctionObserver from '../../IntersectionObserver.vue'
+import useRenderer from './Renderer'
 
 export default defineComponent({
   name: 'circular-disposition',
@@ -29,28 +29,27 @@ export default defineComponent({
   },
   setup(props, context) {
     const { modifier } = toRefs(props)
-    const [time, timer] = initTimer(modifier)
 
     // extract radius from modifiers circular:<radius>:clockwise-100
     //                                      :int     :sense    -intervalTime
-    const circle = {
-      radius: 250,
-      center: {
-        x: 250,
-        y: 250,
-      },
-    }
 
+    const radius = 250
     const el = ref(null)
     const threshold = ref([1])
+    const baseAngle = (Math.PI * 2) / context.slots.default()[0].children.length
+    const velocity = 1
+
     let children
-    const baseAngle = calculateBaseAngle(
-      context.slots.default()[0].children.length
-    )
+    let paint
+
+    const renderer = useRenderer(et => {
+      paint(et)
+    })
 
     onMounted(() => {
-      children = retrieveChildren(el.value.childNodes)
-      paintChildren(children)
+      children = initChildren(el.value.childNodes)
+      paint = initPainter(children)
+      paint()
     })
 
     onBeforeUnmount(() => {
@@ -62,10 +61,9 @@ export default defineComponent({
       threshold,
       useIntersectionObserver: modifier.value !== '',
       inView,
-      outView,
     }
 
-    function retrieveChildren(childNodes) {
+    function initChildren(childNodes) {
       return Array.from(childNodes)
         .filter(inDIVElements)
         .map(initChild)
@@ -81,121 +79,41 @@ export default defineComponent({
         return {
           angle: baseAngle * (index + 1),
           style: child.style,
-          sizes: { w: child.clientWidth, h: child.clientHeight },
+          sizes: {
+            width: child.clientWidth,
+            height: child.clientHeight,
+          },
         }
       }
     }
 
-    function paintChildren(children) {
-      children.forEach(({ angle, style, sizes }) => {
-        const x =
-          circle.center.x +
-          Math.cos(angle * time.value) * circle.radius -
-          sizes.w / 2
-        const y =
-          circle.center.y +
-          Math.sin(angle * time.value) * circle.radius -
-          sizes.h / 2
+    function initPainter(children, isClockwise = true) {
+      return function paint(et = 0) {
+        children.forEach(child => {
+          const { width, height } = child.sizes
 
-        style.transform = `translateX(${x}px) translateY(${y}px)`
-      })
-    }
+          if (isClockwise) child.angle += et * velocity
+          else child.angle -= et * velocity
 
-    function calculateBaseAngle(childrenAmount) {
-      return (Math.PI * 2) / childrenAmount
-    }
+          const x = radius + Math.cos(child.angle) * radius - width / 2
+          const y = radius + Math.sin(child.angle) * radius - height / 2
 
-    function initTimer(modifier) {
-      const time = ref(1)
-      let timeTick
-      let interval
-      let friction = 1
-
-      const baseVelocity = 0.01
-
-      switch (modifier.value) {
-        case 'clockwise':
-          timeTick = function() {
-            time.value += baseVelocity * friction
-          }
-          break
-        case 'anticlockwise':
-          timeTick = function() {
-            time.value -= baseVelocity * friction
-          }
-          break
-        default:
-          timeTick = function() {}
+          child.style.transform = `translateX(${x}px) translateY(${y}px)`
+        })
       }
-
-      const timer = {
-        start() {
-          clearInterval(interval)
-          accelerate(() => {
-            interval = setInterval(() => {
-              timeTick()
-              paintChildren(children)
-            }, 100)
-          })
-        },
-        pause() {
-          clearInterval(interval)
-          decelerate()
-        },
-        stop() {
-          clearInterval(interval)
-        },
-      }
-
-      function accelerate(cb) {
-        repeat(10)
-
-        function repeat(step) {
-          setTimeout(() => {
-            if (step === 0) {
-              clearInterval(interval)
-              cb()
-              return
-            }
-
-            friction += 0.01
-            timeTick()
-            paintChildren(children)
-            repeat(--step)
-          }, 100)
-        }
-      }
-
-      function decelerate() {
-        repeat(10)
-
-        function repeat(step) {
-          setTimeout(() => {
-            if (step === 0) {
-              clearInterval(interval)
-              return
-            }
-
-            friction -= 0.01
-            timeTick()
-            paintChildren(children)
-            repeat(--step)
-          }, 100)
-        }
-      }
-
-      return [time, timer]
     }
 
     function inView() {
-      timer.start()
+      renderer.start()
     }
 
-    function outView() {
-      timer.pause(() => paintChildren(children))
-    }
+    // function outView() {
+    //   timer.pause(() => paintChildren(children))
+    // }
   },
 })
+
+//TODO call pause when change tab
 </script>
 
 <style scoped>
