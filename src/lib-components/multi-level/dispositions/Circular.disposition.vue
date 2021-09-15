@@ -48,7 +48,6 @@ export default defineComponent({
     const radius = 200
     const el = ref(null)
     const threshold = ref([1])
-    const baseAngle = (Math.PI * 2) / context.slots.default()[0].children.length
 
     let children
     let paint
@@ -66,7 +65,7 @@ export default defineComponent({
     })
 
     onBeforeUnmount(() => {
-      timer.stop()
+      renderer.stop()
     })
 
     return {
@@ -87,6 +86,9 @@ export default defineComponent({
       }
 
       function initChild(child, index) {
+        const baseAngle =
+          (Math.PI * 2) / context.slots.default()[0].children.length
+
         child.style.position = 'absolute'
         child.style.transition = '0.1s ease-in'
 
@@ -115,10 +117,16 @@ export default defineComponent({
           if (isClockwise) child.angle += et * angleIncrement
           else child.angle -= et * angleIncrement
 
-          const x = radius + Math.cos(child.angle) * radius - width / 2
-          const y = radius + Math.sin(child.angle) * radius - height / 2
+          const cos = Math.cos(child.angle) * radius
+          const sin = Math.sin(child.angle) * radius
 
-          child.style.transform = `translateX(${x}px) translateY(${y}px)`
+          const x = radius + cos - width / 2
+          const y = radius + sin - height / 2
+
+          const a = -Math.atan(sin / 1000) * 100
+          const b = Math.atan(cos / 1000) * 100
+
+          child.style.transform = `translateX(${x}px) translateY(${y}px) rotateX(${a}deg) rotateY(${b}deg)`
         })
       }
     }
@@ -139,7 +147,6 @@ div {
   position: relative;
   width: 400px;
   height: 400px;
-  border: dashed 1px;
   border-radius: 50%;
 }
 </style>

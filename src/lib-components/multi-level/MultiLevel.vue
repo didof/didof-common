@@ -1,5 +1,5 @@
 <template>
-  <div v-width>
+  <div v-width class="d3">
     <!-- <div v-if="levels">
       <slot v-for="level in levels" :name="level">
         <slot></slot>
@@ -89,5 +89,9 @@ export default defineComponent({
 .min-content {
   width: min-content;
   height: min-content;
+}
+
+.d3 {
+  transform-style: preserve-3d;
 }
 </style>

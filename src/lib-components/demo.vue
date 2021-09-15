@@ -1,7 +1,7 @@
 <template>
   <div v-center v-height>
     <MultiLevel
-      disposition="circular:clockwise-1000"
+      disposition="circular:clockwise-5000"
       :items="items"
       :gap="gap"
       :perspective="1000"
@@ -24,7 +24,7 @@ export default defineComponent({
   name: 'demo',
   components: registerComponents(components),
   setup() {
-    const items = [1, 2, 3, 4, 5].map(index => ({
+    const items = [1, 2, 3, 4, 5, 6].map(index => ({
       name: index,
     }))
 
