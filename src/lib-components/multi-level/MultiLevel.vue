@@ -8,7 +8,7 @@
     <div v-if="items">
       <component :is="component" :modifier="modifier">
         <div v-for="(item, index) in items" :key="index" class="min-content">
-          <PerspectiveBox :gap="-(gap * index)" :perspective="perspective">
+          <PerspectiveBox :perspective="perspective" :gap="-(gap * index)">
             <slot :item="item" :index="index"></slot>
           </PerspectiveBox>
         </div>

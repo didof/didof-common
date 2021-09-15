@@ -1,4 +1,4 @@
-const defaultConfig = { elapsedMultiplicator: 0.0001 }
+const defaultConfig = { elapsedMultiplicator: 0.01 }
 
 export default function useRenderer(onTick, config = defaultConfig) {
   config = Object.assign(config, defaultConfig)
@@ -25,6 +25,7 @@ export default function useRenderer(onTick, config = defaultConfig) {
   }
 
   return {
+    frameDuration,
     start() {
       start = Date.now()
       frameId = requestAnimationFrame(tick)

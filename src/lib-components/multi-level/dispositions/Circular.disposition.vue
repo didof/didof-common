@@ -3,6 +3,7 @@
     v-if="useIntersectionObserver"
     :threshold="threshold"
     @in="inView"
+    @out="outView"
   >
     <div ref="el">
       <slot></slot>
@@ -28,22 +29,23 @@ export default defineComponent({
     },
   },
   setup(props, context) {
-    const [rotation, velocity] = readModifier(props)
+    const [rotation, msToRevolution] = readModifier(props)
 
     function readModifier(props) {
       const { modifier } = toRefs(props)
-      let [rotation, velocity] = modifier.value.split('-')
+      let [rotation, msToRevolution] = modifier.value.split('-')
 
       if (rotation !== 'clockwise' && rotation !== 'anticlockwise')
         rotation = false
 
-      if (!velocity && typeof velocity !== 'number') velocity = 1
-      velocity = parseInt(velocity)
+      if (!msToRevolution && typeof msToRevolution !== 'number')
+        msToRevolution = 1000
+      msToRevolution = parseInt(msToRevolution)
 
-      return [rotation, velocity]
+      return [rotation, msToRevolution]
     }
 
-    const radius = 250
+    const radius = 200
     const el = ref(null)
     const threshold = ref([1])
     const baseAngle = (Math.PI * 2) / context.slots.default()[0].children.length
@@ -72,6 +74,7 @@ export default defineComponent({
       threshold,
       useIntersectionObserver: Boolean(rotation),
       inView,
+      outView,
     }
 
     function initChildren(childNodes) {
@@ -100,13 +103,17 @@ export default defineComponent({
 
     function initPainter(children, { rotation }) {
       const isClockwise = rotation === 'clockwise'
+      const stepsToRevolution = Math.round(
+        msToRevolution / renderer.frameDuration
+      )
+      const angleIncrement = (Math.PI * 2) / stepsToRevolution
 
       return function paint(et = 0) {
         children.forEach(child => {
           const { width, height } = child.sizes
 
-          if (isClockwise) child.angle += et * velocity
-          else child.angle -= et * velocity
+          if (isClockwise) child.angle += et * angleIncrement
+          else child.angle -= et * angleIncrement
 
           const x = radius + Math.cos(child.angle) * radius - width / 2
           const y = radius + Math.sin(child.angle) * radius - height / 2
@@ -120,20 +127,18 @@ export default defineComponent({
       renderer.start()
     }
 
-    // function outView() {
-    //   timer.pause(() => paintChildren(children))
-    // }
+    function outView() {
+      renderer.stop()
+    }
   },
 })
-
-//TODO call pause when change tab
 </script>
 
 <style scoped>
 div {
   position: relative;
-  width: 500px;
-  height: 500px;
+  width: 400px;
+  height: 400px;
   border: dashed 1px;
   border-radius: 50%;
 }

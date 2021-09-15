@@ -1,16 +1,18 @@
 <template>
-  <MultiLevel
-    disposition="circular:clockwise-2"
-    :items="items"
-    :gap="gap"
-    :perspective="1000"
-  >
-    <template #default="slotProps">
-      <div v-box v-center>
-        {{ slotProps.item.name }}
-      </div>
-    </template>
-  </MultiLevel>
+  <div v-center v-height>
+    <MultiLevel
+      disposition="circular:clockwise-1000"
+      :items="items"
+      :gap="gap"
+      :perspective="1000"
+    >
+      <template #default="slotProps">
+        <div v-box v-center>
+          {{ slotProps.item.name }}
+        </div>
+      </template>
+    </MultiLevel>
+  </div>
 </template>
 
 <script>
@@ -22,7 +24,7 @@ export default defineComponent({
   name: 'demo',
   components: registerComponents(components),
   setup() {
-    const items = new Array(10).fill('test').map(index => ({
+    const items = [1, 2, 3, 4, 5].map(index => ({
       name: index,
     }))
 

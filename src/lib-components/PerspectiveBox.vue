@@ -1,6 +1,5 @@
 <template>
   <div ref="box">
-    perspective
     <slot></slot>
   </div>
 </template>
@@ -19,8 +18,8 @@ export default defineComponent({
       required: true,
     },
     oscillation: {
-      type: Number,
-      default: 0,
+      type: Boolean,
+      default: true,
     },
   },
   setup(props) {
@@ -31,10 +30,15 @@ export default defineComponent({
     const box = ref(null)
 
     onMounted(() => {
-      const p = `perspective(${perspective.value}px)`
-      const g = `translateZ(${gap.value}px)`
+      box.value.style.transform = `perspective(${perspective.value}px) `
 
-      box.value.style.transform = [p, g].join(' ')
+      if (oscillation.value)
+        box.value.animate([{ transform: `translateZ(${gap.value}px)` }], {
+          duration: 7500,
+          direction: 'alternate',
+          iterations: Infinity,
+          easing: 'ease-in-out',
+        })
     })
 
     return {
@@ -44,3 +48,15 @@ export default defineComponent({
   },
 })
 </script>
+
+<style scoped>
+@keyframes oscillate {
+  from {
+    transform: scale(1);
+  }
+
+  to {
+    transform: scale(2);
+  }
+}
+</style>
