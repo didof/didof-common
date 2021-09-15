@@ -5,7 +5,7 @@
     @in="inView"
     @out="outView"
   >
-    <div ref="el">
+    <div ref="el" class="cirlce">
       <slot></slot>
     </div>
   </InteserctionObserver>
@@ -31,26 +31,19 @@ export default defineComponent({
       type: Number,
       required: true,
     },
+    sizes: {
+      type: Number,
+      default: null,
+    },
   },
   setup(props, context) {
-    const { perspective } = toRefs(props)
+    const { perspective, sizes: radius } = toRefs(props)
     const [rotation, msToRevolution] = readModifier(props)
 
-    function readModifier(props) {
-      const { modifier } = toRefs(props)
-      let [rotation, msToRevolution] = modifier.value.split('-')
+    // TODO is readonly. Can the provider/injector pattern solve this?
+    if (radius.value === null)
+      radius.value = Math.min(window.innerWidth, window.innerHeight)
 
-      if (rotation !== 'clockwise' && rotation !== 'anticlockwise')
-        rotation = false
-
-      if (!msToRevolution && typeof msToRevolution !== 'number')
-        msToRevolution = 1000
-      msToRevolution = parseInt(msToRevolution)
-
-      return [rotation, msToRevolution]
-    }
-
-    const radius = 200
     const el = ref(null)
     const threshold = ref([1])
 
@@ -62,6 +55,8 @@ export default defineComponent({
     })
 
     onMounted(() => {
+      el.value.style.width = radius.value * 2 + 'px'
+      el.value.style.height = radius.value * 2 + 'px'
       children = initChildren(el.value.childNodes)
       paint = initPainter(children, {
         rotation,
@@ -79,6 +74,20 @@ export default defineComponent({
       useIntersectionObserver: Boolean(rotation),
       inView,
       outView,
+    }
+
+    function readModifier(props) {
+      const { modifier } = toRefs(props)
+      let [rotation, msToRevolution] = modifier.value.split('-')
+
+      if (rotation !== 'clockwise' && rotation !== 'anticlockwise')
+        rotation = false
+
+      if (!msToRevolution && typeof msToRevolution !== 'number')
+        msToRevolution = 1000
+      msToRevolution = parseInt(msToRevolution)
+
+      return [rotation, msToRevolution]
     }
 
     function initChildren(childNodes) {
@@ -122,11 +131,11 @@ export default defineComponent({
           if (isClockwise) child.angle += et * angleIncrement
           else child.angle -= et * angleIncrement
 
-          const cos = Math.cos(child.angle) * radius
-          const sin = Math.sin(child.angle) * radius
+          const cos = Math.cos(child.angle) * radius.value
+          const sin = Math.sin(child.angle) * radius.value
 
-          const x = radius + cos - width / 2
-          const y = radius + sin - height / 2
+          const x = radius.value + cos - width / 2
+          const y = radius.value + sin - height / 2
 
           const a = -Math.atan(sin / perspective.value) * 100
           const b = Math.atan(cos / perspective.value) * 100
@@ -148,10 +157,8 @@ export default defineComponent({
 </script>
 
 <style scoped>
-div {
+.cirlce {
   position: relative;
-  width: 400px;
-  height: 400px;
   border-radius: 50%;
 }
 </style>

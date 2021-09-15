@@ -10,6 +10,7 @@
         :is="component"
         :modifier="modifier"
         :perspective="perspective"
+        :sizes="sizes"
       >
         <div v-for="(item, index) in items" :key="index" class="min-content">
           <PerspectiveBox :perspective="perspective" :gap="-(gap * index)">
@@ -29,7 +30,7 @@ import { registerComponents } from '../../utils/register'
 
 export default defineComponent({
   name: 'multi-level',
-  props: ['levels', 'items', 'gap', 'perspective'],
+  props: ['levels', 'items', 'gap', 'perspective', 'sizes'],
   components: { PerspectiveBox, ...registerComponents(dispositions) },
   setup(props, context) {
     const { component, modifier } = getDispositionComponent()

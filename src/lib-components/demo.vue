@@ -1,10 +1,11 @@
 <template>
-  <div v-center v-height>
+  <div v-center v-height id="demo">
     <MultiLevel
       disposition="circular:clockwise-5000"
       :items="items"
       :gap="gap"
       :perspective="1000"
+      :sizes="300"
     >
       <template #default="slotProps">
         <div v-box v-center>
@@ -38,3 +39,9 @@ export default defineComponent({
   },
 })
 </script>
+
+<style scoped>
+#demo {
+  margin-top: 200px;
+}
+</style>
