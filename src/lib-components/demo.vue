@@ -22,7 +22,7 @@ export default defineComponent({
   name: 'demo',
   components: registerComponents(components),
   setup() {
-    const items = new Array(7).fill('test').map(index => ({
+    const items = new Array(10).fill('test').map(index => ({
       name: index,
     }))
 

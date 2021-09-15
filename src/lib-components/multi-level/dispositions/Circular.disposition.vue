@@ -29,7 +29,6 @@ export default defineComponent({
   },
   setup(props, context) {
     const [rotation, velocity] = readModifier(props)
-    console.log(rotation)
 
     function readModifier(props) {
       const { modifier } = toRefs(props)
