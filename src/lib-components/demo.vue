@@ -1,6 +1,6 @@
 <template>
   <MultiLevel
-    disposition="circular:clockwise"
+    disposition="circular:clockwise-2"
     :items="items"
     :gap="gap"
     :perspective="1000"

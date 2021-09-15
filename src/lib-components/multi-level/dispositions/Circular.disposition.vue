@@ -28,16 +28,26 @@ export default defineComponent({
     },
   },
   setup(props, context) {
-    const { modifier } = toRefs(props)
+    const [rotation, velocity] = readModifier(props)
+    console.log(rotation)
 
-    // extract radius from modifiers circular:<radius>:clockwise-100
-    //                                      :int     :sense    -intervalTime
+    function readModifier(props) {
+      const { modifier } = toRefs(props)
+      let [rotation, velocity] = modifier.value.split('-')
+
+      if (rotation !== 'clockwise' && rotation !== 'anticlockwise')
+        rotation = false
+
+      if (!velocity && typeof velocity !== 'number') velocity = 1
+      velocity = parseInt(velocity)
+
+      return [rotation, velocity]
+    }
 
     const radius = 250
     const el = ref(null)
     const threshold = ref([1])
     const baseAngle = (Math.PI * 2) / context.slots.default()[0].children.length
-    const velocity = 1
 
     let children
     let paint
@@ -48,7 +58,9 @@ export default defineComponent({
 
     onMounted(() => {
       children = initChildren(el.value.childNodes)
-      paint = initPainter(children)
+      paint = initPainter(children, {
+        rotation,
+      })
       paint()
     })
 
@@ -59,7 +71,7 @@ export default defineComponent({
     return {
       el,
       threshold,
-      useIntersectionObserver: modifier.value !== '',
+      useIntersectionObserver: Boolean(rotation),
       inView,
     }
 
@@ -87,7 +99,9 @@ export default defineComponent({
       }
     }
 
-    function initPainter(children, isClockwise = true) {
+    function initPainter(children, { rotation }) {
+      const isClockwise = rotation === 'clockwise'
+
       return function paint(et = 0) {
         children.forEach(child => {
           const { width, height } = child.sizes
