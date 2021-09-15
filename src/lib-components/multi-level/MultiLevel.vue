@@ -33,7 +33,7 @@ export default defineComponent({
   props: ['levels', 'items', 'gap', 'perspective', 'sizes'],
   components: { PerspectiveBox, ...registerComponents(dispositions) },
   setup(props, context) {
-    const { component, modifier } = getDispositionComponent()
+    const [component, modifier] = readDisposition(context)
     const gap = toRef(props, 'gap')
 
     return {
@@ -42,13 +42,13 @@ export default defineComponent({
       modifier,
     }
 
-    function getDispositionComponent() {
+    function readDisposition(context) {
       let [type, modifier] = context.attrs.disposition.split(':')
       if (!type) type = 'linear'
 
       const component = dispositions[type]
 
-      return { component, modifier }
+      return [component, modifier]
     }
   },
 })
