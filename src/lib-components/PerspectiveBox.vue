@@ -30,7 +30,7 @@ export default defineComponent({
     const box = ref(null)
 
     onMounted(() => {
-      box.value.style.transform = `perspective(${perspective.value}px) `
+      // box.value.style.transform = `perspective(${perspective.value}px) `
 
       if (oscillation.value)
         box.value.animate([{ transform: `translateZ(${gap.value}px)` }], {

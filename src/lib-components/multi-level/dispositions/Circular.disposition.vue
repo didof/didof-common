@@ -5,7 +5,7 @@
     @in="inView"
     @out="outView"
   >
-    <div ref="el" class="cirlce">
+    <div ref="el" class="circle">
       <slot></slot>
     </div>
   </InteserctionObserver>
@@ -143,8 +143,8 @@ export default defineComponent({
 
           const distance = perspective.value + gap.value * index
 
-          const a = -Math.atan(sin / distance) * (perspective.value / 10)
-          const b = Math.atan(cos / distance) * (perspective.value / 10)
+          const a = Math.atan(sin / distance) * (perspective.value / 10)
+          const b = -Math.atan(cos / distance) * (perspective.value / 10)
 
           child.style.transform = `translateX(${x}px) translateY(${y}px) rotateX(${a}deg) rotateY(${b}deg)`
         })
@@ -163,8 +163,9 @@ export default defineComponent({
 </script>
 
 <style scoped>
-.cirlce {
+.circle {
   position: relative;
   border-radius: 50%;
+  perspective: 1000px;
 }
 </style>

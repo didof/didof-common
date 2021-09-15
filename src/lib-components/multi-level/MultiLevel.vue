@@ -1,5 +1,5 @@
 <template>
-  <div v-width class="d3">
+  <div v-width>
     <!-- <div v-if="levels">
       <slot v-for="level in levels" :name="level">
         <slot></slot>
@@ -13,7 +13,11 @@
         :sizes="sizes"
         :gap="gap"
       >
-        <div v-for="(item, index) in items" :key="index" class="min-content">
+        <div
+          v-for="(item, index) in items"
+          :key="index"
+          class="min-content preserve-3d"
+        >
           <PerspectiveBox :perspective="perspective" :gap="-(gap * index)">
             <slot :item="item" :index="index"></slot>
           </PerspectiveBox>
@@ -97,7 +101,7 @@ export default defineComponent({
   height: min-content;
 }
 
-.d3 {
+.preserve-3d {
   transform-style: preserve-3d;
 }
 </style>

@@ -5,11 +5,11 @@
       :items="items"
       :gap="gap"
       :perspective="perspective"
-      :sizes="200"
+      :sizes="380"
     >
       <template #default="slotProps">
-        <div v-box v-center>
-          {{ slotProps.item.name }}
+        <div v-center class="box">
+          <img :src="slotProps.item.name" />
         </div>
       </template>
     </MultiLevel>
@@ -26,13 +26,13 @@ export default defineComponent({
   components: registerComponents(components),
   setup() {
     const items = ref(
-      [1, 2, 3].map(index => ({
-        name: index,
+      [1, 2, 3, 4, 5, 6, 7, 8, 9].map(index => ({
+        name: `https://picsum.photos/seed/${index}/200`,
       }))
     )
 
     const perspective = ref(800)
-    const gap = ref(1000)
+    const gap = ref(300)
 
     return {
       items,
@@ -46,5 +46,10 @@ export default defineComponent({
 <style scoped>
 #demo {
   margin: 200px;
+}
+
+.box {
+  width: 200px;
+  height: 200px;
 }
 </style>
