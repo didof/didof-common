@@ -61,7 +61,7 @@ export default defineComponent({
 
 <style scoped>
 #demo {
-  margin-top: 400px;
+  margin-top: 30%;
 }
 
 .test1 {

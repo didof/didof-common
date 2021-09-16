@@ -12,7 +12,7 @@
 </template>
 
 <script>
-import { defineComponent, ref, toRef, toRefs, watchEffect } from 'vue'
+import { defineComponent, ref, toRefs, watchEffect } from 'vue'
 
 export default defineComponent({
   name: 'mouse-vector-detector',
@@ -101,7 +101,7 @@ export default defineComponent({
         angle = Math.PI * 2 - angle
       }
 
-      const payload = { angle, x, y, i }
+      const payload = { angle, x, y: -y, i, q }
 
       context.emit('vector', payload)
 
