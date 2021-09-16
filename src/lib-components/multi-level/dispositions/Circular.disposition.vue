@@ -22,7 +22,7 @@ import {
   onMounted,
   onBeforeUnmount,
   inject,
-  watchEffect,
+  watch,
 } from 'vue'
 
 import InteserctionObserver from '../../IntersectionObserver.vue'
@@ -90,13 +90,10 @@ export default defineComponent({
       renderer.stop()
     })
 
-    watchEffect(() => {
-      setRadius(radius)
-      const delta = windowSizes.min.value - radius.value * 3
-      if (delta < 0) {
-        radius.value += delta
-        setCircle(el, radius)
-      }
+    watch(windowSizes.width, (newValue, oldValue) => {
+      const delta = newValue - oldValue
+      radius.value += delta / 3
+      setCircle(el, radius)
     })
 
     return {
