@@ -1,5 +1,5 @@
 <template>
-  <WindowSizesWatcher>
+  <WindowSizesProvider>
     <div v-center v-height id="demo">
       <FrontSprint :items="items" :gap="gap">
         <template #default="slotProps">
@@ -10,7 +10,7 @@
         </template>
       </FrontSprint>
     </div>
-  </WindowSizesWatcher>
+  </WindowSizesProvider>
 </template>
 
 <script>
