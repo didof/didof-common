@@ -61,6 +61,7 @@ export default defineComponent({
     onMounted(() => {
       el.value.style.width = radius.value * 2 + 'px'
       el.value.style.height = radius.value * 2 + 'px'
+      el.value.style.perspective = perspective.value + 'px'
       children = initChildren(el.value.childNodes)
       paint = initPainter(children, {
         rotation,
@@ -160,14 +161,11 @@ export default defineComponent({
     }
   },
 })
-
-// TODO perspective should be dynamically attached
 </script>
 
 <style scoped>
 .circle {
   position: relative;
   border-radius: 50%;
-  perspective: 1000px;
 }
 </style>

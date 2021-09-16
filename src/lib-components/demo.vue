@@ -2,8 +2,9 @@
   <div v-center v-height id="demo">
     <FrontSprint :items="items">
       <template #default="slotProps">
-        <div v-box>
-          <img :src="slotProps.item.src" />
+        <div v-box v-center>
+          <!-- <img :src="slotProps.item.src" /> -->
+          {{ slotProps.index }}
         </div>
       </template>
     </FrontSprint>
@@ -20,8 +21,8 @@ export default defineComponent({
   components: registerComponents(components),
   setup() {
     const items = ref(
-      [1, 2, 3, 4, 5, 6, 7, 8].map(index => ({
-        src: `https://picsum.photos/seed/${index}/100`,
+      [1, 2, 3, 4, 5, 6].map(index => ({
+        // src: `https://picsum.photos/seed/${index}/100`,
         index,
       }))
     )
