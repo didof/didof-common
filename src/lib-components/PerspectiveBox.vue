@@ -5,7 +5,7 @@
 </template>
 
 <script>
-import { defineComponent, ref, toRef, onMounted } from 'vue'
+import { defineComponent, ref, toRef, onMounted, onUpdated } from 'vue'
 export default defineComponent({
   name: 'perspective-box',
   props: {
@@ -17,26 +17,46 @@ export default defineComponent({
       type: Number,
       required: true,
     },
-    oscillation: {
-      type: Boolean,
-      default: true,
-    },
   },
   setup(props) {
     const gap = toRef(props, 'gap')
-    const oscillation = toRef(props, 'oscillation')
 
     const box = ref(null)
+    let animator = makeAnimator()
 
-    onMounted(() => {
-      if (oscillation.value)
-        box.value.animate([{ transform: `translateZ(${gap.value}px)` }], {
-          duration: 7500,
-          direction: 'alternate',
-          iterations: Infinity,
-          easing: 'ease-in-out',
-        })
-    })
+    onMounted(animator.start)
+    onUpdated(animator.update)
+
+    function makeAnimator() {
+      let animation
+
+      return {
+        start() {
+          animate()
+        },
+        pause() {
+          animation.pause()
+        },
+        update() {
+          animation.pause()
+          animate()
+        },
+      }
+
+      function animate() {
+        animation = box.value.animate(
+          [{ transform: `translateZ(${gap.value}px)` }],
+          {
+            duration: 7500,
+            direction: 'alternate',
+            iterations: Infinity,
+            easing: 'ease-in-out',
+          }
+        )
+      }
+    }
+
+    function animate() {}
 
     return {
       gap,

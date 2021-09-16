@@ -1,7 +1,7 @@
 <template>
   <WindowSizesWatcher>
     <div v-center v-height id="demo">
-      <FrontSprint :items="items">
+      <FrontSprint :items="items" :gap="gap">
         <template #default="slotProps">
           <div v-box v-center>
             <!-- <img :src="slotProps.item.src" /> -->
@@ -21,7 +21,9 @@ import { registerComponents } from '../utils/register'
 export default defineComponent({
   name: 'demo',
   components: registerComponents(components),
-  setup() {
+  setup(props) {
+    const gap = ref(100)
+
     const items = ref(
       [1, 2, 3, 4, 5, 6].map(index => ({
         // src: `https://picsum.photos/seed/${index}/100`,
@@ -29,8 +31,13 @@ export default defineComponent({
       }))
     )
 
+    setTimeout(() => {
+      gap.value = 600
+    }, 5000)
+
     return {
       items,
+      gap,
     }
   },
 })

@@ -22,6 +22,7 @@ import {
   onMounted,
   onBeforeUnmount,
   inject,
+  watchEffect,
 } from 'vue'
 import InteserctionObserver from '../../IntersectionObserver.vue'
 import useRenderer from './Renderer'
@@ -72,6 +73,10 @@ export default defineComponent({
       })
 
       paint()
+    })
+
+    watchEffect(() => {
+      console.log(gap.value)
     })
 
     onBeforeUnmount(() => {
@@ -149,8 +154,8 @@ export default defineComponent({
 
           const distance = perspective.value + gap.value * index
 
-          const a = Math.atan(sin / distance) * (perspective.value / 10)
-          const b = -Math.atan(cos / distance) * (perspective.value / 10)
+          const a = Math.atan(sin / distance) * (perspective.value / 5)
+          const b = -Math.atan(cos / distance) * (perspective.value / 5)
 
           child.style.transform = `translateX(${x}px) translateY(${y}px) rotateX(${a}deg) rotateY(${b}deg)`
         })
