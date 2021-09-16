@@ -6,9 +6,9 @@
         :key="index"
         class="min-content preserve-3d"
       >
-        <PerspectiveBox :gap="-(gap * index)">
+        <ZBox :z="-(gap * index)">
           <slot :item="item" :index="index"></slot>
-        </PerspectiveBox>
+        </ZBox>
       </div>
     </component>
   </PerspectiveProvider>
@@ -16,8 +16,8 @@
 
 <script>
 import { defineComponent } from 'vue'
-import PerspectiveBox from '../PerspectiveBox.vue'
-import PerspectiveProvider from '../PerspectiveProvider.vue'
+import ZBox from '../animated-box/ZBox.vue'
+import PerspectiveProvider from '../providers/PerspectiveProvider.vue'
 import * as dispositions from './dispositions/index'
 import { registerComponents } from '../../utils/register'
 
@@ -42,7 +42,7 @@ export default defineComponent({
     },
   },
   components: {
-    PerspectiveBox,
+    ZBox,
     PerspectiveProvider,
     ...registerComponents(dispositions),
   },

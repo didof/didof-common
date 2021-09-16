@@ -4,8 +4,8 @@
       <FrontSprint :items="items" :gap="gap">
         <template #default="slotProps">
           <div v-box v-center>
-            <!-- <img :src="slotProps.item.src" /> -->
-            {{ slotProps.index }}
+            <img :src="slotProps.item.src" />
+            <!-- {{ slotProps.index }} -->
           </div>
         </template>
       </FrontSprint>
@@ -26,14 +26,17 @@ export default defineComponent({
 
     const items = ref(
       [1, 2, 3, 4, 5, 6].map(index => ({
-        // src: `https://picsum.photos/seed/${index}/100`,
+        src: `https://picsum.photos/seed/${index}/130`,
         index,
       }))
     )
 
     setTimeout(() => {
-      gap.value = 600
-    }, 5000)
+      gap.value = 300
+      setTimeout(() => {
+        gap.value = 50
+      }, 3000)
+    }, 3000)
 
     return {
       items,

@@ -22,10 +22,10 @@ import {
   onMounted,
   onBeforeUnmount,
   inject,
-  watchEffect,
 } from 'vue'
+
 import InteserctionObserver from '../../IntersectionObserver.vue'
-import useRenderer from './Renderer'
+import useRenderer from '../../../utils/Renderer'
 
 export default defineComponent({
   name: 'circular-disposition',
@@ -73,10 +73,6 @@ export default defineComponent({
       })
 
       paint()
-    })
-
-    watchEffect(() => {
-      console.log(gap.value)
     })
 
     onBeforeUnmount(() => {

@@ -14,8 +14,7 @@
 <script>
 /**
  * TODO
- * if sizes is not given, it should auto-calculate it
- * auto update when perspective || gap changes || size changes
+ * auto update when size changes
  */
 
 import { defineComponent } from 'vue'
