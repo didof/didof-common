@@ -5,6 +5,7 @@
 </template>
 
 <script>
+// https://andylangton.co.uk/blog/development/get-viewportwindow-size-width-and-height-javascript
 import {
   defineComponent,
   ref,

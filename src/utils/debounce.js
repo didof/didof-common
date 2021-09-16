@@ -1,3 +1,5 @@
+// https://bestofvue.com/repo/David-Desmaisons-Vue-resize-vuejs-event-handling
+
 const defaultTimeout = 300
 
 /**

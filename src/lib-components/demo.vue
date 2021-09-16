@@ -1,16 +1,29 @@
 <template>
-  <WindowSizesProvider>
+  <div id="demo">
+    <!-- <WindowSizesProvider>
     <div v-center v-height id="demo">
       <FrontSprint :items="items" :gap="gap">
         <template #default="slotProps">
           <div v-box v-center>
             <img :src="slotProps.item.src" />
-            <!-- {{ slotProps.index }} -->
           </div>
         </template>
       </FrontSprint>
     </div>
-  </WindowSizesProvider>
+  </WindowSizesProvider> -->
+    <TwoFaces>
+      <template #front>
+        <div class="test1">
+          front card
+        </div>
+      </template>
+      <template #back>
+        <div class="test2">
+          back card
+        </div>
+      </template>
+    </TwoFaces>
+  </div>
 </template>
 
 <script>
@@ -48,12 +61,16 @@ export default defineComponent({
 
 <style scoped>
 #demo {
-  margin-top: 200px;
+  margin-top: 400px;
 }
 
-.box {
-  background: grey;
-  width: 100px;
-  height: 100px;
+.test1 {
+  width: 150px;
+  background: red;
+}
+
+.test2 {
+  height: 200px;
+  background: blue;
 }
 </style>

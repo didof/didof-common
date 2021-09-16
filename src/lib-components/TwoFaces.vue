@@ -1,44 +1,25 @@
 <template>
-  <div class="scene" ref="el" v-dynamicEvents="events">
-    <div class="card">
-      <div class="face face--front" v-center>
+  <PerspectiveProvider :perspective="800">
+    <div class="card" ref="el">
+      <div class="face face--front">
         <slot name="front"></slot>
       </div>
-      <div class="face face--back" v-center>
+      <div class="face face--back">
         <slot name="back"></slot>
       </div>
     </div>
-  </div>
+  </PerspectiveProvider>
 </template>
 
 <script>
-/**
- *  <!-- <TwoFaces :width="100" :height="100" :rotate-on="['click']">
-      <template #front>
-        <div>
-          ciao
-        </div>
-      </template>
-      <template #back>
-        <div>
-          addio
-        </div>
-      </template>
-    </TwoFaces> -->
- */
 import { defineComponent, ref, toRefs, onMounted } from 'vue'
+
+import { PerspectiveProvider } from '@/lib-components'
 
 export default defineComponent({
   name: 'two-faces',
+  components: { PerspectiveProvider },
   props: {
-    width: {
-      type: Number,
-      required: true,
-    },
-    height: {
-      type: Number,
-      required: true,
-    },
     rotateOn: {
       type: Array,
       default: ['click'],
@@ -46,11 +27,21 @@ export default defineComponent({
   },
   setup(props) {
     const el = ref(null)
-    const { width, height, rotateOn } = toRefs(props)
+    const { rotateOn } = toRefs(props)
 
     onMounted(() => {
-      el.value.style.width = width.value + 'px'
-      el.value.style.height = height.value + 'px'
+      const [front, back] = Array.from(el.value.childNodes)
+        .map(child => child.childNodes)
+        .map(child => Array.from(child))
+        .map(face => face.find(child => child.nodeName === 'DIV'))
+
+      const width = Math.max(front.clientWidth, back.clientWidth)
+      const height = Math.max(front.clientHeight, back.clientHeight)
+
+      front.style.width = width + 'px'
+      front.style.height = height + 'px'
+      back.style.width = width + 'px'
+      back.style.height = height + 'px'
     })
 
     return {
@@ -62,13 +53,7 @@ export default defineComponent({
 </script>
 
 <style scoped>
-.scene {
-  perspective: 600px;
-}
-
 .card {
-  width: 100%;
-  height: 100%;
   position: relative;
   transition: transform 1s;
   transform-style: preserve-3d;
@@ -76,17 +61,14 @@ export default defineComponent({
 
 .face {
   position: absolute;
-  height: 100%;
-  width: 100%;
   backface-visibility: hidden;
 }
 
 .face--front {
-  background: red;
+  transform: rotateY(0);
 }
 
 .face--back {
-  background: blue;
   transform: rotateY(180deg);
 }
 </style>

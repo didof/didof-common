@@ -61,7 +61,6 @@ export default defineComponent({
 
     onMounted(() => {
       if (!radius.value) radius.value = windowSizes.min.value / 3
-      el.value.style.perspective = perspective.value + 'px'
       el.value.style.width = radius.value * 2 + 'px'
       el.value.style.height = radius.value * 2 + 'px'
 

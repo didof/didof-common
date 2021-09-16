@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div :style="{ perspective: perspective + 'px' }">
     <slot></slot>
   </div>
 </template>
