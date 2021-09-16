@@ -24,7 +24,7 @@ import {
   inject,
 } from 'vue'
 
-import InteserctionObserver from '../../IntersectionObserver.vue'
+import InteserctionObserver from '../../detectors/IntersectionObserver.vue'
 import useRenderer from '../../../utils/Renderer'
 
 export default defineComponent({
