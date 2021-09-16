@@ -15,22 +15,6 @@
 </template>
 
 <script>
-/**
- * <MultiLevel
-      disposition="circular:clockwise-5000"
-      :items="items"
-      :gap="gap"
-      :perspective="perspective"
-      :sizes="380"
-    >
-      <template #default="slotProps">
-        <div v-center class="box">
-          <!-- {{ slotProps.item.name }} -->
-          <img :src="slotProps.item.name" />
-        </div>
-      </template>
-    </MultiLevel>
- */
 import { defineComponent } from 'vue'
 import PerspectiveBox from '../PerspectiveBox.vue'
 import PerspectiveProvider from '../PerspectiveProvider.vue'

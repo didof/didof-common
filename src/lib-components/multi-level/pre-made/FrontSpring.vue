@@ -4,7 +4,6 @@
     :items="items"
     :gap="gap"
     :perspective="perspective"
-    :sizes="160"
   >
     <template #default="slotProps">
       <slot :item="slotProps.item" :index="slotProps.index"></slot>
@@ -13,6 +12,12 @@
 </template>
 
 <script>
+/**
+ * TODO
+ * if sizes is not given, it should auto-calculate it
+ * auto update when perspective || gap changes || size changes
+ */
+
 import { defineComponent } from 'vue'
 import MultiLevel from '../MultiLevel.vue'
 

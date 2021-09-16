@@ -1,14 +1,16 @@
 <template>
-  <div v-center v-height id="demo">
-    <FrontSprint :items="items">
-      <template #default="slotProps">
-        <div v-box v-center>
-          <!-- <img :src="slotProps.item.src" /> -->
-          {{ slotProps.index }}
-        </div>
-      </template>
-    </FrontSprint>
-  </div>
+  <WindowSizesWatcher>
+    <div v-center v-height id="demo">
+      <FrontSprint :items="items">
+        <template #default="slotProps">
+          <div v-box v-center>
+            <!-- <img :src="slotProps.item.src" /> -->
+            {{ slotProps.index }}
+          </div>
+        </template>
+      </FrontSprint>
+    </div>
+  </WindowSizesWatcher>
 </template>
 
 <script>

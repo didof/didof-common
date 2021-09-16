@@ -36,7 +36,7 @@ export default defineComponent({
     },
     sizes: {
       type: Number,
-      default: null,
+      required: false,
     },
     gap: {
       type: Number,
@@ -44,11 +44,13 @@ export default defineComponent({
     },
   },
   setup(props, context) {
-    const { sizes: radius, gap } = toRefs(props)
+    const { sizes, gap } = toRefs(props)
     const [rotation, msToRevolution] = readModifier(props)
+    const radius = ref(sizes.value)
 
     const el = ref(null)
     const threshold = ref([1])
+    const windowSizes = inject('windowSizes')
     const perspective = inject('perspective')
 
     let children
@@ -57,13 +59,18 @@ export default defineComponent({
     const renderer = useRenderer(et => paint(et))
 
     onMounted(() => {
+      el.value.style.perspective = perspective.value + 'px'
+
+      if (!radius.value) radius.value = windowSizes.min.value / 3
+
       el.value.style.width = radius.value * 2 + 'px'
       el.value.style.height = radius.value * 2 + 'px'
-      el.value.style.perspective = perspective.value + 'px'
+
       children = initChildren(el.value.childNodes)
       paint = initPainter(children, {
         rotation,
       })
+
       paint()
     })
 
