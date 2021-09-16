@@ -14,15 +14,7 @@ import {
   provide,
 } from 'vue'
 
-function useDebounce(func, timeout = 300) {
-  let timer
-  return function debounce(...args) {
-    clearTimeout(timer)
-    timer = setTimeout(() => {
-      func.apply(this, args)
-    }, timeout)
-  }
-}
+import { useDebounce } from '@/utils/debounce'
 
 export default defineComponent({
   name: 'window-sizes-watcher',
