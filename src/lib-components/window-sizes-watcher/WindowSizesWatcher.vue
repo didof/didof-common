@@ -5,7 +5,14 @@
 </template>
 
 <script>
-import { defineComponent, ref, onMounted, onBeforeUnmount, provide } from 'vue'
+import {
+  defineComponent,
+  ref,
+  computed,
+  onMounted,
+  onBeforeUnmount,
+  provide,
+} from 'vue'
 
 function useDebounce(func, timeout = 300) {
   let timer
@@ -28,12 +35,18 @@ export default defineComponent({
   setup() {
     const width = ref(window.innerWidth)
     const height = ref(window.innerHeight)
-    const min = ref(Math.min(width.value, height.value))
+
+    const min = computed(() => Math.min(width.value, height.value))
+    const max = computed(() => Math.max(width.value, height.value))
+
+    const isVertical = computed(() => height.value > width.value)
 
     provide('windowSizes', {
       width,
       height,
       min,
+      max,
+      isVertical,
     })
 
     const debouncedHandleResize = useDebounce(handleResize)

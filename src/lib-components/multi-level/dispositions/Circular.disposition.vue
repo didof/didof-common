@@ -22,6 +22,7 @@ import {
   onMounted,
   onBeforeUnmount,
   inject,
+  watchEffect,
 } from 'vue'
 
 import InteserctionObserver from '../../IntersectionObserver.vue'
@@ -60,12 +61,9 @@ export default defineComponent({
     const renderer = useRenderer(et => paint(et))
 
     onMounted(() => {
-      el.value.style.perspective = perspective.value + 'px'
-
-      if (!radius.value) radius.value = windowSizes.min.value / 3
-
-      el.value.style.width = radius.value * 2 + 'px'
-      el.value.style.height = radius.value * 2 + 'px'
+      setRadius(radius)
+      setPerspective(el, perspective)
+      setCircle(el, radius)
 
       children = initChildren(el.value.childNodes)
       paint = initPainter(children, {
@@ -75,8 +73,30 @@ export default defineComponent({
       paint()
     })
 
+    function setCircle(el, radius) {
+      el.value.style.width = radius.value * 2 + 'px'
+      el.value.style.height = radius.value * 2 + 'px'
+    }
+
+    function setRadius(radius) {
+      if (!radius.value) radius.value = windowSizes.min.value / 3
+    }
+
+    function setPerspective(el, perspective) {
+      el.value.style.perspective = perspective.value + 'px'
+    }
+
     onBeforeUnmount(() => {
       renderer.stop()
+    })
+
+    watchEffect(() => {
+      setRadius(radius)
+      const delta = windowSizes.min.value - radius.value * 3
+      if (delta < 0) {
+        radius.value += delta
+        setCircle(el, radius)
+      }
     })
 
     return {
