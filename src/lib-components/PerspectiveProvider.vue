@@ -1,11 +1,11 @@
 <template>
-  <div :style="{ perspective }">
+  <div>
     <slot></slot>
   </div>
 </template>
 
 <script>
-import { defineComponent, provide } from 'vue'
+import { defineComponent, provide, toRefs, readonly } from 'vue'
 
 export default defineComponent({
   name: 'perspective-provider',
@@ -18,7 +18,7 @@ export default defineComponent({
   setup(props) {
     const { perspective } = toRefs(props)
 
-    provide('perspective', perspective)
+    provide('perspective', readonly(perspective))
 
     return { perspective }
   },

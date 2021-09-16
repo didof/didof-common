@@ -15,7 +15,14 @@
 </template>
 
 <script>
-import { defineComponent, ref, toRefs, onMounted, onBeforeUnmount } from 'vue'
+import {
+  defineComponent,
+  ref,
+  toRefs,
+  onMounted,
+  onBeforeUnmount,
+  inject,
+} from 'vue'
 import InteserctionObserver from '../../IntersectionObserver.vue'
 import useRenderer from './Renderer'
 
@@ -27,10 +34,6 @@ export default defineComponent({
       type: String,
       default: '',
     },
-    perspective: {
-      type: Number,
-      required: true,
-    },
     sizes: {
       type: Number,
       default: null,
@@ -41,22 +44,17 @@ export default defineComponent({
     },
   },
   setup(props, context) {
-    const { perspective, sizes: radius, gap } = toRefs(props)
+    const { sizes: radius, gap } = toRefs(props)
     const [rotation, msToRevolution] = readModifier(props)
-
-    // TODO is readonly. Can the provider/injector pattern solve this?
-    if (radius.value === null)
-      radius.value = Math.min(window.innerWidth, window.innerHeight)
 
     const el = ref(null)
     const threshold = ref([1])
+    const perspective = inject('perspective')
 
     let children
     let paint
 
-    const renderer = useRenderer(et => {
-      paint(et)
-    })
+    const renderer = useRenderer(et => paint(et))
 
     onMounted(() => {
       el.value.style.width = radius.value * 2 + 'px'

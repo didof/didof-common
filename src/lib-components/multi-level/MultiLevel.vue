@@ -1,12 +1,6 @@
 <template>
-  <div v-width>
-    <component
-      :is="component"
-      :modifier="modifier"
-      :perspective="perspective"
-      :sizes="sizes"
-      :gap="gap"
-    >
+  <PerspectiveProvider :perspective="perspective">
+    <component :is="component" :modifier="modifier" :sizes="sizes" :gap="gap">
       <div
         v-for="(item, index) in items"
         :key="index"
@@ -17,7 +11,7 @@
         </PerspectiveBox>
       </div>
     </component>
-  </div>
+  </PerspectiveProvider>
 </template>
 
 <script>
@@ -37,21 +31,41 @@
       </template>
     </MultiLevel>
  */
-import { defineComponent, toRef } from 'vue'
+import { defineComponent } from 'vue'
 import PerspectiveBox from '../PerspectiveBox.vue'
+import PerspectiveProvider from '../PerspectiveProvider.vue'
 import * as dispositions from './dispositions/index'
 import { registerComponents } from '../../utils/register'
 
 export default defineComponent({
   name: 'multi-level',
-  props: ['levels', 'items', 'gap', 'perspective', 'sizes'],
-  components: { PerspectiveBox, ...registerComponents(dispositions) },
+  props: {
+    items: {
+      type: Array,
+      required: true,
+    },
+    gap: {
+      type: Number,
+      required: true,
+    },
+    perspective: {
+      type: Number,
+      required: true,
+    },
+    sizes: {
+      type: Number,
+      required: false,
+    },
+  },
+  components: {
+    PerspectiveBox,
+    PerspectiveProvider,
+    ...registerComponents(dispositions),
+  },
   setup(props, context) {
     const [component, modifier] = readDisposition(context)
-    const gap = toRef(props, 'gap')
 
     return {
-      gap,
       component,
       modifier,
     }
