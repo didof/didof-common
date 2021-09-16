@@ -1,2 +1,6 @@
 export { default as IntersectionObserver } from './IntersectionObserver.vue'
 export { default as MultiLevel } from './multi-level/MultiLevel.vue'
+export { default as FrontSprint } from './multi-level/pre-made/FrontSpring.vue'
+export { default as TwoFaces } from './TwoFaces.vue'
+export { default as PerspectiveProvider } from './PerspectiveProvider.vue'
+export { default as StackedDeck } from './stacked-deck/StackedDeck.vue'

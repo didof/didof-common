@@ -3,9 +3,10 @@ import * as directives from '@/lib-directives/index'
 
 function makeInstaller(type, elements) {
   return function install(app) {
-    Object.entries(elements).forEach(([name, func]) => {
-      app[type](name, func)
+    Object.entries(elements).forEach(([name, module]) => {
+      app[type](name, module)
     })
+    console.info(`Installed ${type}s: ${Object.keys(elements).join(', ')}`)
   }
 }
 

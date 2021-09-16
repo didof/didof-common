@@ -1,28 +1,42 @@
 <template>
   <div v-width>
-    <div v-if="items">
-      <component
-        :is="component"
-        :modifier="modifier"
-        :perspective="perspective"
-        :sizes="sizes"
-        :gap="gap"
+    <component
+      :is="component"
+      :modifier="modifier"
+      :perspective="perspective"
+      :sizes="sizes"
+      :gap="gap"
+    >
+      <div
+        v-for="(item, index) in items"
+        :key="index"
+        class="min-content preserve-3d"
       >
-        <div
-          v-for="(item, index) in items"
-          :key="index"
-          class="min-content preserve-3d"
-        >
-          <PerspectiveBox :perspective="perspective" :gap="-(gap * index)">
-            <slot :item="item" :index="index"></slot>
-          </PerspectiveBox>
-        </div>
-      </component>
-    </div>
+        <PerspectiveBox :gap="-(gap * index)">
+          <slot :item="item" :index="index"></slot>
+        </PerspectiveBox>
+      </div>
+    </component>
   </div>
 </template>
 
 <script>
+/**
+ * <MultiLevel
+      disposition="circular:clockwise-5000"
+      :items="items"
+      :gap="gap"
+      :perspective="perspective"
+      :sizes="380"
+    >
+      <template #default="slotProps">
+        <div v-center class="box">
+          <!-- {{ slotProps.item.name }} -->
+          <img :src="slotProps.item.name" />
+        </div>
+      </template>
+    </MultiLevel>
+ */
 import { defineComponent, toRef } from 'vue'
 import PerspectiveBox from '../PerspectiveBox.vue'
 import * as dispositions from './dispositions/index'

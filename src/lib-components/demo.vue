@@ -1,19 +1,12 @@
 <template>
   <div v-center v-height id="demo">
-    <MultiLevel
-      disposition="circular:clockwise-5000"
-      :items="items"
-      :gap="gap"
-      :perspective="perspective"
-      :sizes="380"
-    >
+    <FrontSprint :items="items">
       <template #default="slotProps">
-        <div v-center class="box">
-          {{ slotProps.item.name }}
-          <!-- <img :src="slotProps.item.name" /> -->
+        <div v-box>
+          <img :src="slotProps.item.src" />
         </div>
       </template>
-    </MultiLevel>
+    </FrontSprint>
   </div>
 </template>
 
@@ -27,19 +20,14 @@ export default defineComponent({
   components: registerComponents(components),
   setup() {
     const items = ref(
-      [1, 2, 3, 4, 5, 6, 7, 8, 9].map(index => ({
-        // name: `https://picsum.photos/seed/${index}/200`,
-        name: index,
+      [1, 2, 3, 4, 5, 6, 7, 8].map(index => ({
+        src: `https://picsum.photos/seed/${index}/100`,
+        index,
       }))
     )
 
-    const perspective = ref(800)
-    const gap = ref(300)
-
     return {
       items,
-      gap,
-      perspective,
     }
   },
 })
@@ -47,12 +35,12 @@ export default defineComponent({
 
 <style scoped>
 #demo {
-  margin: 200px;
+  margin-top: 200px;
 }
 
 .box {
   background: grey;
-  width: 200px;
-  height: 200px;
+  width: 100px;
+  height: 100px;
 }
 </style>

@@ -160,6 +160,8 @@ export default defineComponent({
     }
   },
 })
+
+// TODO perspective should be dynamically attached
 </script>
 
 <style scoped>

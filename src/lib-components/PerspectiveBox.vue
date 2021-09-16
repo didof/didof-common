@@ -23,15 +23,12 @@ export default defineComponent({
     },
   },
   setup(props) {
-    const perspective = toRef(props, 'perspective')
     const gap = toRef(props, 'gap')
     const oscillation = toRef(props, 'oscillation')
 
     const box = ref(null)
 
     onMounted(() => {
-      // box.value.style.transform = `perspective(${perspective.value}px) `
-
       if (oscillation.value)
         box.value.animate([{ transform: `translateZ(${gap.value}px)` }], {
           duration: 7500,
