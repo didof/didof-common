@@ -13,12 +13,12 @@
   </WindowSizesProvider> -->
     <TwoFaces>
       <template #front>
-        <div class="test1">
+        <div class="test1" v-center>
           front card
         </div>
       </template>
       <template #back>
-        <div class="test2">
+        <div class="test2" v-center>
           back card
         </div>
       </template>
@@ -66,11 +66,16 @@ export default defineComponent({
 
 .test1 {
   width: 150px;
-  background: red;
+  background: lightgoldenrodyellow;
+  border: 1px solid darkred;
+  border-radius: 5px;
 }
 
 .test2 {
   height: 200px;
-  background: blue;
+  background: darkred;
+  border: 1px solid lightgoldenrodyellow;
+  border-radius: 5px;
+  color: white;
 }
 </style>

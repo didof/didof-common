@@ -93,31 +93,32 @@ export default defineComponent({
             break
         }
 
-        const initialFrame = {
-          transform: `rotateX(${r.X}deg) rotateY(${r.Y}deg) translateX(0) translateY(0)`,
-        }
-        const middleFrame = {
-          transform: `
+        const frames = [
+          {
+            transform: `rotateX(${r.X}deg) rotateY(${r.Y}deg) translateX(0) translateY(0)`,
+          },
+          {
+            transform: `
                 rotateX(${(r.X += deltaXa)}deg)
                 rotateY(${(r.Y += deltaYa)}deg)
                 translateX(${(x / 2) * factor}px)
                 translateY(${(-y / 2) * factor}px)
                 translateZ(30px)
                 `,
-        }
-        const finalFrame = {
-          transform: `rotateX(${(r.X += deltaXb)}deg) rotateY(${(r.Y += deltaYb)}deg) translateX(0) translateY(0)`,
-        }
+          },
+          {
+            transform: `rotateX(${(r.X += deltaXb)}deg) rotateY(${(r.Y += deltaYb)}deg) translateX(0) translateY(0)`,
+          },
+        ]
+        const isVerticalCountOdd = verticalCount % 2 !== 0
         const optionalFrame = {
           transform: `
             rotateX(${r.X}deg)
             rotateY(${r.Y}deg)
-            rotateZ(180deg)
+            rotateZ(${isVerticalCountOdd ? '-' : '+'}180deg)
             `,
         }
-
-        const frames = [initialFrame, middleFrame, finalFrame]
-        if (verticalCount % 2 !== 0) frames.push(optionalFrame)
+        if (isVerticalCountOdd) frames.push(optionalFrame)
 
         el.value.animate(frames, options)
         factor *= -1
