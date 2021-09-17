@@ -1,5 +1,5 @@
 <template>
-  <main
+  <div
     ref="el"
     draggable="false"
     @mousedown="mousedown"
@@ -8,7 +8,7 @@
     @mousemove="mousemove"
   >
     <slot></slot>
-  </main>
+  </div>
 </template>
 
 <script>
@@ -79,36 +79,27 @@ export default defineComponent({
     function calc(toX, toY) {
       const x = toX - from[0]
       const y = -(toY - from[1])
-      const i = Math.sqrt(x ** 2, y ** 2)
+      const i = Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2))
+      const aDeg = Math.atan2(y, x)
+      const aRad = aDeg * (180 / Math.PI)
+      let dir
 
-      // FIXME Theme must be a more concise solution!
-
-      let q
-      if (x > 0) {
-        if (y > 0) q = 1
-        else q = 4
+      if (Math.abs(x) > Math.abs(y)) {
+        if (Math.sign(x) === +1) dir = 'right'
+        else dir = 'left'
       } else {
-        if (y > 0) q = 2
-        else q = 3
+        if (Math.sign(y) === +1) dir = 'up'
+        else dir = 'down'
       }
 
-      let angle = Math.atan(Math.abs(y) / Math.abs(x))
-      if (q === 2) {
-        angle += Math.PI * 0.5
-      } else if (q === 3) {
-        angle += Math.PI * 1
-      } else if (q === 4) {
-        angle = Math.PI * 2 - angle
-      }
-
-      const payload = { angle, x, y: -y, i, q }
-
-      context.emit('vector', payload)
-
-      if (q === 1 || q === 2) context.emit('up', payload)
-      else if (q === 1 || q === 4) context.emit('right', payload)
-      else if (q === 4 || q === 3) context.emit('down', payload)
-      else if (q === 3 || q === 2) context.emit('left', payload)
+      context.emit('vector', {
+        x,
+        y,
+        i,
+        aDeg,
+        aRad,
+        dir,
+      })
 
       if (disableTimeout.value) setTimeout(reset, disableTimeout.value)
     }
@@ -124,3 +115,9 @@ export default defineComponent({
   },
 })
 </script>
+
+<style scoped>
+div {
+  user-select: none;
+}
+</style>

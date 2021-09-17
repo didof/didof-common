@@ -30,7 +30,8 @@ export default defineComponent({
     const el = ref(null)
     const width = ref(null)
     const height = ref(null)
-    let isFacingFront = true
+
+    const handleVector = makeHandleVector()
 
     onMounted(() => {
       const mouseVectorDetectorElement = el.value.childNodes[0]
@@ -56,58 +57,44 @@ export default defineComponent({
       backContent.style.height = height.value + 'px'
     })
 
-    function handleVector({ angle, x, y, i, q }) {
+    function makeHandleVector() {
       const animationConf = {
         duration: 1000,
         easing: 'ease-in-out',
         fill: 'forwards',
       }
 
-      let r1 = 160
-      let r2 = 180
-      let factor = isFacingFront ? -1 : 1
-      if (q === 1 || q === 4) (r1 *= factor), (r2 *= factor)
-      isFacingFront ? frontToBack() : backToFront()
-      isFacingFront = !isFacingFront
+      return function handleVector({ x, y, i, aRad, dir }) {
+        let r0 = 0
+        let rAxis, rSign
 
-      function frontToBack() {
+        switch (dir) {
+          case 'up':
+            rAxis = 'X'
+            rSign = '-'
+            break
+          case 'right':
+            rAxis = 'Y'
+            rSign = '-'
+            break
+          case 'down':
+            rAxis = 'X'
+            rSign = '+'
+            break
+          case 'left':
+            rAxis = 'Y'
+            rSign = '+'
+            break
+        }
+
         el.value.animate(
           [
-            {
-              transform: `translateX(0) translateY(0) rotateY(0deg)`,
-            },
-            {
-              transform: `translateX(${x / 2}px) translateY(${y /
-                2}px) rotateY(${r1}deg) translateZ(-70px)`,
-            },
-            {
-              transform: `translateX(0) translateY(0) rotateY(-180deg)`,
-            },
+            { transform: `rotate${rAxis}(${r0}deg)` },
+            { transform: `rotate${rAxis}(${rSign}180deg)` },
           ],
           animationConf
         )
       }
-
-      // TODO fix with quadrants
-      function backToFront() {
-        el.value.animate(
-          [
-            {
-              transform: `translateX(0) translateY(0) rotateY(-180deg)`,
-            },
-            {
-              transform: `translateX(${-x / 2}px) translateY(${-y /
-                2}px) rotateY(${-r1}deg) scale(2.1)`,
-            },
-            {
-              transform: `translateX(0) translateY(0) rotateY(0deg)`,
-            },
-          ],
-          animationConf
-        )
-      }
-
-      // TODO when it rotates, it see backwards the movement; invert quadrants
     }
 
     return {
