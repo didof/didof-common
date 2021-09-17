@@ -62,6 +62,7 @@ export default defineComponent({
       const r = {
         X: 0,
         Y: 0,
+        Z: 0,
       }
       let factor = 1
       let verticalCount = 0
@@ -72,11 +73,13 @@ export default defineComponent({
           deltaXb = 0,
           deltaYb = 0
 
+        let isVertical = false
+
         switch (dir) {
           case 'up':
             deltaXa = -160
             deltaXb = -20
-            verticalCount += 1
+            isVertical = true
             break
           case 'right':
             deltaYa = -160
@@ -85,7 +88,7 @@ export default defineComponent({
           case 'down':
             deltaXa = 160
             deltaXb = 20
-            verticalCount += 1
+            isVertical = true
             break
           case 'left':
             deltaYa = 160
@@ -95,30 +98,41 @@ export default defineComponent({
 
         const frames = [
           {
-            transform: `rotateX(${r.X}deg) rotateY(${r.Y}deg) translateX(0) translateY(0)`,
+            transform: `
+            rotateX(${r.X}deg)
+            rotateY(${r.Y}deg)
+            rotateZ(${r.Z}deg)
+            translateX(0)
+            translateY(0)`,
           },
           {
             transform: `
                 rotateX(${(r.X += deltaXa)}deg)
                 rotateY(${(r.Y += deltaYa)}deg)
+                rotateZ(${r.Z}deg)
                 translateX(${(x / 2) * factor}px)
                 translateY(${(-y / 2) * factor}px)
                 translateZ(30px)
                 `,
           },
           {
-            transform: `rotateX(${(r.X += deltaXb)}deg) rotateY(${(r.Y += deltaYb)}deg) translateX(0) translateY(0)`,
+            transform: `
+              rotateX(${(r.X += deltaXb)}deg)
+              rotateY(${(r.Y += deltaYb)}deg)
+              rotateZ(${r.Z}deg)
+              translateX(0)
+              translateY(0)`,
           },
         ]
-        const isVerticalCountOdd = verticalCount % 2 !== 0
-        const optionalFrame = {
-          transform: `
+        if (isVertical)
+          frames.push({
+            transform: `
             rotateX(${r.X}deg)
             rotateY(${r.Y}deg)
-            rotateZ(${isVerticalCountOdd ? '-' : '+'}180deg)
+            rotateZ(${(r.Z += 180)}deg)
             `,
-        }
-        if (isVerticalCountOdd) frames.push(optionalFrame)
+          })
+        console.log(r.Z)
 
         el.value.animate(frames, options)
         factor *= -1
