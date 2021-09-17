@@ -55,7 +55,7 @@ export default defineComponent({
     function makeHandleVector() {
       const animationConf = {
         duration: 1000,
-        easing: 'ease-in-out',
+        easing: 'cubic-bezier(.48,.97,.72,.28)',
         fill: 'forwards',
       }
 
@@ -63,35 +63,54 @@ export default defineComponent({
         X: 0,
         Y: 0,
       }
+      let factor = 1
 
       return function handleVector({ x, y, i, aRad, dir }) {
-        let deltaX = 0,
-          deltaY = 0
+        let deltaXa = 0,
+          deltaYa = 0,
+          deltaXb = 0,
+          deltaYb = 0
 
         switch (dir) {
           case 'up':
-            deltaX = -180
+            deltaXa = -160
+            deltaXb = -20
             break
           case 'right':
-            deltaY = -180
+            deltaYa = -160
+            deltaYb = -20
             break
           case 'down':
-            deltaX = 180
+            deltaXa = 160
+            deltaXb = 20
             break
           case 'left':
-            deltaY = 180
+            deltaYa = 160
+            deltaYb = 20
             break
         }
 
         el.value.animate(
           [
-            { transform: `rotateX(${r.X}deg) rotateY(${r.Y}deg)` },
             {
-              transform: `rotateX(${(r.X += deltaX)}deg) rotateY(${(r.Y += deltaY)}deg)`,
+              transform: `rotateX(${r.X}deg) rotateY(${r.Y}deg) translateX(0) translateY(0)`,
+            },
+            {
+              transform: `
+                rotateX(${(r.X += deltaXa)}deg)
+                rotateY(${(r.Y += deltaYa)}deg)
+                translateX(${(x / 2) * factor}px)
+                translateY(${(-y / 2) * factor}px)
+                translateZ(30px)`,
+            },
+            {
+              transform: `rotateX(${(r.X += deltaXb)}deg) rotateY(${(r.Y += deltaYb)}deg) translateX(0) translateY(0)`,
             },
           ],
           animationConf
         )
+
+        factor *= -1
       }
     }
 
