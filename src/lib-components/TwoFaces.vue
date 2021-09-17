@@ -53,7 +53,7 @@ export default defineComponent({
     })
 
     function makeHandleVector() {
-      const animationConf = {
+      const options = {
         duration: 1000,
         easing: 'cubic-bezier(.48,.97,.72,.28)',
         fill: 'forwards',
@@ -64,6 +64,7 @@ export default defineComponent({
         Y: 0,
       }
       let factor = 1
+      let verticalCount = 0
 
       return function handleVector({ x, y, i, aRad, dir }) {
         let deltaXa = 0,
@@ -75,6 +76,7 @@ export default defineComponent({
           case 'up':
             deltaXa = -160
             deltaXb = -20
+            verticalCount += 1
             break
           case 'right':
             deltaYa = -160
@@ -83,6 +85,7 @@ export default defineComponent({
           case 'down':
             deltaXa = 160
             deltaXb = 20
+            verticalCount += 1
             break
           case 'left':
             deltaYa = 160
@@ -90,26 +93,33 @@ export default defineComponent({
             break
         }
 
-        el.value.animate(
-          [
-            {
-              transform: `rotateX(${r.X}deg) rotateY(${r.Y}deg) translateX(0) translateY(0)`,
-            },
-            {
-              transform: `
+        const initialFrame = {
+          transform: `rotateX(${r.X}deg) rotateY(${r.Y}deg) translateX(0) translateY(0)`,
+        }
+        const middleFrame = {
+          transform: `
                 rotateX(${(r.X += deltaXa)}deg)
                 rotateY(${(r.Y += deltaYa)}deg)
                 translateX(${(x / 2) * factor}px)
                 translateY(${(-y / 2) * factor}px)
-                translateZ(30px)`,
-            },
-            {
-              transform: `rotateX(${(r.X += deltaXb)}deg) rotateY(${(r.Y += deltaYb)}deg) translateX(0) translateY(0)`,
-            },
-          ],
-          animationConf
-        )
+                translateZ(30px)
+                `,
+        }
+        const finalFrame = {
+          transform: `rotateX(${(r.X += deltaXb)}deg) rotateY(${(r.Y += deltaYb)}deg) translateX(0) translateY(0)`,
+        }
+        const optionalFrame = {
+          transform: `
+            rotateX(${r.X}deg)
+            rotateY(${r.Y}deg)
+            rotateZ(180deg)
+            `,
+        }
 
+        const frames = [initialFrame, middleFrame, finalFrame]
+        if (verticalCount % 2 !== 0) frames.push(optionalFrame)
+
+        el.value.animate(frames, options)
         factor *= -1
       }
     }
