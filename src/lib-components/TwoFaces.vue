@@ -1,25 +1,25 @@
 <template>
   <PerspectiveProvider :perspective="800">
-    <div ref="el" class="card">
-      <MouseVectorDetector
-        :width="width"
-        :height="height"
-        :disableTimeout="300"
-        @vector="handleVector"
-      >
+    <MouseVectorDetector
+      :width="width"
+      :height="height"
+      :disableTimeout="300"
+      @vector="handleVector"
+    >
+      <div ref="el" class="card">
         <div class="face face--front">
           <slot name="front"></slot>
         </div>
         <div class="face face--back">
           <slot name="back"></slot>
         </div>
-      </MouseVectorDetector>
-    </div>
+      </div>
+    </MouseVectorDetector>
   </PerspectiveProvider>
 </template>
 
 <script>
-import { defineComponent, ref, toRefs, onMounted } from 'vue'
+import { defineComponent, ref, onMounted } from 'vue'
 
 import { PerspectiveProvider, MouseVectorDetector } from '@/lib-components'
 
@@ -34,27 +34,22 @@ export default defineComponent({
     const handleVector = makeHandleVector()
 
     onMounted(() => {
-      const mouseVectorDetectorElement = el.value.childNodes[0]
-
-      const faces = Array.from(mouseVectorDetectorElement.childNodes).filter(
-        child => child.nodeName === 'DIV'
-      )
-      const [front, back] = faces
-
-      width.value = Math.max(front.clientWidth, back.clientWidth)
-      height.value = Math.max(front.clientHeight, back.clientHeight)
-
-      const [frontContent, backContent] = Array.from(faces).map(
-        face =>
-          Array.from(face.childNodes).filter(
+      const [frontChild, backChild] = Array.from(el.value.childNodes).map(
+        child =>
+          Array.from(child.childNodes).filter(
             child => child.nodeName === 'DIV'
           )[0]
       )
 
-      frontContent.style.width = width.value + 'px'
-      frontContent.style.height = height.value + 'px'
-      backContent.style.width = width.value + 'px'
-      backContent.style.height = height.value + 'px'
+      width.value = Math.max(frontChild.clientWidth, backChild.clientWidth)
+      height.value = Math.max(frontChild.clientHeight, backChild.clientHeight)
+      el.value.style.width = width.value + 'px'
+      el.value.style.height = height.value + 'px'
+
+      frontChild.style.width = width.value + 'px'
+      frontChild.style.height = height.value + 'px'
+      backChild.style.width = width.value + 'px'
+      backChild.style.height = height.value + 'px'
     })
 
     function makeHandleVector() {
@@ -64,8 +59,11 @@ export default defineComponent({
         fill: 'forwards',
       }
 
+      let r0 = 0
+      let r1 = 180
+      let invertDir = false
+
       return function handleVector({ x, y, i, aRad, dir }) {
-        let r0 = 0
         let rAxis, rSign
 
         switch (dir) {
@@ -87,13 +85,25 @@ export default defineComponent({
             break
         }
 
+        console.log(`rotate${rAxis}(${rSign}${r1}deg)`)
+
         el.value.animate(
           [
             { transform: `rotate${rAxis}(${r0}deg)` },
-            { transform: `rotate${rAxis}(${rSign}180deg)` },
+            { transform: `rotate${rAxis}(${rSign}${r1}deg)` },
           ],
           animationConf
         )
+
+        console.log(dir)
+
+        invertDir = !invertDir
+
+        const tmp = r0
+
+        // r0 = Number(rSign + Math.abs(r1))
+
+        // r1 = tmp
       }
     }
 
@@ -110,6 +120,7 @@ export default defineComponent({
 <style scoped>
 .card {
   position: relative;
+  transform-origin: center;
   transform-style: preserve-3d;
 }
 
