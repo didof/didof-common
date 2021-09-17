@@ -59,51 +59,39 @@ export default defineComponent({
         fill: 'forwards',
       }
 
-      let r0 = 0
-      let r1 = 180
-      let invertDir = false
+      const r = {
+        X: 0,
+        Y: 0,
+      }
 
       return function handleVector({ x, y, i, aRad, dir }) {
-        let rAxis, rSign
+        let deltaX = 0,
+          deltaY = 0
 
         switch (dir) {
           case 'up':
-            rAxis = 'X'
-            rSign = '-'
+            deltaX = -180
             break
           case 'right':
-            rAxis = 'Y'
-            rSign = '-'
+            deltaY = -180
             break
           case 'down':
-            rAxis = 'X'
-            rSign = '+'
+            deltaX = 180
             break
           case 'left':
-            rAxis = 'Y'
-            rSign = '+'
+            deltaY = 180
             break
         }
 
-        console.log(`rotate${rAxis}(${rSign}${r1}deg)`)
-
         el.value.animate(
           [
-            { transform: `rotate${rAxis}(${r0}deg)` },
-            { transform: `rotate${rAxis}(${rSign}${r1}deg)` },
+            { transform: `rotateX(${r.X}deg) rotateY(${r.Y}deg)` },
+            {
+              transform: `rotateX(${(r.X += deltaX)}deg) rotateY(${(r.Y += deltaY)}deg)`,
+            },
           ],
           animationConf
         )
-
-        console.log(dir)
-
-        invertDir = !invertDir
-
-        const tmp = r0
-
-        // r0 = Number(rSign + Math.abs(r1))
-
-        // r1 = tmp
       }
     }
 
