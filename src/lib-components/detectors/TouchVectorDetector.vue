@@ -2,10 +2,10 @@
   <div
     ref="el"
     draggable="true"
-    @touchstart="touchstart"
-    @touchend="touchend"
-    @touchleave="touchleave"
-    @touchmove="touchmove"
+    @touchstart.passive="touchstart"
+    @touchend.passive="touchend"
+    @touchleave.passive="touchleave"
+    @touchmove.passive="touchmove"
   >
     <slot></slot>
   </div>
@@ -13,6 +13,7 @@
 
 <script>
 import { defineComponent, ref, toRefs, watchEffect } from 'vue'
+import ScrollManager from '@/utils/ScrollManager'
 
 export default defineComponent({
   name: 'mouse-vector-detector',
@@ -65,17 +66,23 @@ export default defineComponent({
     }
 
     function touchstart({ x, y }) {
+      ScrollManager.disable()
+
       if (disabled) return
       active = true
       from = [x, y]
     }
 
     function touchend() {
+      ScrollManager.enable()
+
       if (disabled) return
       active = false
     }
 
     function touchleave({ x, y }) {
+      ScrollManager.enable()
+
       if (disabled) return
       if (active) calc(x, y)
       active = false
