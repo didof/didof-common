@@ -10,6 +10,9 @@
     "dist/*",
     "src/**/*.vue"
   ],
+  "publishConfig": {
+    "registry":"https://www.npmjs.com/package/didof-common"
+  },
   "sideEffects": false,
   "scripts": {
     "demo": "vue-cli-service serve dev/demo.js",
