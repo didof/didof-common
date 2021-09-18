@@ -6,6 +6,7 @@
     @mouseup="mouseup"
     @mouseleave="mouseleave"
     @mousemove="mousemove"
+    @mouseover="mouseover"
   >
     <slot></slot>
   </div>
@@ -48,10 +49,24 @@ export default defineComponent({
       }
     })
 
-    return { width, height, el, mousedown, mouseup, mouseleave, mousemove }
+    return {
+      width,
+      height,
+      el,
+      mousedown,
+      mouseup,
+      mouseleave,
+      mousemove,
+      mouseover,
+    }
+
+    function mouseover() {
+      el.value.style.cursor = 'grab'
+    }
 
     function mousemove(event) {
       if (disabled || !active) return
+      el.value.style.cursor = 'move'
       while (movesLimit === ++movesCounter) {
         active = false
         disabled = true
@@ -60,12 +75,14 @@ export default defineComponent({
     }
 
     function mousedown(event) {
+      el.value.style.cursor = 'grabbing'
       if (disabled) return
       active = true
       from = [event.offsetX, event.offsetY]
     }
 
     function mouseup() {
+      el.value.style.cursor = 'grab'
       if (disabled) return
       active = false
     }

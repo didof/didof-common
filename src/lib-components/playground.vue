@@ -1,29 +1,16 @@
 <template>
-  <div id="demo">
-    <WindowSizesProvider>
-      <div v-center v-height id="demo">
-        <FrontSprint :items="items" :gap="gap">
-          <template #default="slotProps">
-            <div v-box v-center>
-              <img :src="slotProps.item.src" />
-            </div>
-          </template>
-        </FrontSprint>
+  <TwoFaces>
+    <template #front>
+      <div class="test1" v-center>
+        front card
       </div>
-    </WindowSizesProvider>
-    <TwoFaces>
-      <template #front>
-        <div class="test1" v-center>
-          front card
-        </div>
-      </template>
-      <template #back>
-        <div class="test2" v-center>
-          back card
-        </div>
-      </template>
-    </TwoFaces>
-  </div>
+    </template>
+    <template #back>
+      <div class="test2" v-center>
+        back card
+      </div>
+    </template>
+  </TwoFaces>
 </template>
 
 <script>
@@ -34,7 +21,7 @@ import { registerComponents } from '../utils/register'
 export default defineComponent({
   name: 'demo',
   components: registerComponents(components),
-  setup() {
+  setup(props) {
     const gap = ref(100)
 
     const items = ref(
@@ -43,6 +30,13 @@ export default defineComponent({
         index,
       }))
     )
+
+    setTimeout(() => {
+      gap.value = 300
+      setTimeout(() => {
+        gap.value = 50
+      }, 3000)
+    }, 3000)
 
     return {
       items,
@@ -53,10 +47,6 @@ export default defineComponent({
 </script>
 
 <style scoped>
-#demo {
-  margin-top: 30%;
-}
-
 .test1 {
   width: 150px;
   background: lightgoldenrodyellow;

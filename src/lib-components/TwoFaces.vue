@@ -132,7 +132,6 @@ export default defineComponent({
             rotateZ(${(r.Z += 180)}deg)
             `,
           })
-        console.log(r.Z)
 
         el.value.animate(frames, options)
         factor *= -1
