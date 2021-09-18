@@ -14,7 +14,6 @@
   "scripts": {
     "demo": "vue-cli-service serve dev/demo.js",
     "dev": "vue-cli-service serve dev/dev.js",
-    "show": "npm install && npm run demo",
     "prebuild": "rimraf ./dist",
     "build": "cross-env NODE_ENV=production rollup --config build/rollup.config.js",
     "build:ssr": "cross-env NODE_ENV=production rollup --config build/rollup.config.js --format cjs",
