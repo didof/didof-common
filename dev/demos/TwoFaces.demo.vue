@@ -1,6 +1,6 @@
 <template>
   <div class="layout green">
-    <img src="@/assets/img/TwoFaces.png" class="image" />
+    <!-- <img src="@/assets/img/TwoFaces.png" class="image" /> -->
     <TwoFaces>
       <template #front>
         <div class="front" v-center>
@@ -55,16 +55,20 @@ export default defineComponent({
 }
 
 .front {
-  width: 15vw;
+  width: 150px;
+  object-fit: fill;
+  overflow: hidden;
+  border-radius: 5px;
 }
 
 .back {
-  height: 15vh;
+  height: 250px;
+  object-fit: fill;
+  overflow: hidden;
 }
 
 .adapt {
-  width: 100%;
-  height: auto;
   border-radius: 5px;
+  width: 100%;
 }
 </style>

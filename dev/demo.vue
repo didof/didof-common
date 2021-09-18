@@ -1,7 +1,9 @@
 <template>
   <WindowSizesProvider>
-    <FrontSpringDemo />
-    <TwoFacesDemo />
+    <DeviceProvider>
+      <!-- <FrontSpringDemo /> -->
+      <TwoFacesDemo />
+    </DeviceProvider>
   </WindowSizesProvider>
 </template>
 

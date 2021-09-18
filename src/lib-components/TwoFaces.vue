@@ -1,9 +1,10 @@
 <template>
   <PerspectiveProvider :perspective="800">
-    <MouseVectorDetector
+    <component
+      :is="detector"
       :width="width"
       :height="height"
-      :disableTimeout="300"
+      :disableTimeout="animationDurationMs"
       @vector="handleVector"
     >
       <div ref="el" class="card">
@@ -14,24 +15,38 @@
           <slot name="back"></slot>
         </div>
       </div>
-    </MouseVectorDetector>
+    </component>
   </PerspectiveProvider>
 </template>
 
 <script>
-import { defineComponent, ref, onMounted } from 'vue'
+import { defineComponent, ref, toRefs, onMounted, inject } from 'vue'
 
-import { PerspectiveProvider, MouseVectorDetector } from '@/lib-components'
+import {
+  PerspectiveProvider,
+  MouseVectorDetector,
+  TouchVectorDetector,
+} from '@/lib-components'
 
 export default defineComponent({
   name: 'two-faces',
-  components: { PerspectiveProvider, MouseVectorDetector },
-  setup() {
+  components: { PerspectiveProvider, MouseVectorDetector, TouchVectorDetector },
+  props: {
+    animationDurationMs: {
+      type: Number,
+      default: 1000,
+    },
+  },
+  setup(props) {
     const el = ref(null)
     const width = ref(null)
     const height = ref(null)
+    const { animationDurationMs } = toRefs(props)
 
     const handleVector = makeHandleVector()
+
+    const isTouch = inject('isTouch')
+    const detector = isTouch ? TouchVectorDetector : MouseVectorDetector
 
     onMounted(() => {
       const [frontChild, backChild] = Array.from(el.value.childNodes).map(
@@ -52,9 +67,17 @@ export default defineComponent({
       backChild.style.height = height.value + 'px'
     })
 
+    return {
+      el,
+      width,
+      height,
+      handleVector,
+      animationDurationMs,
+      detector,
+    }
+
     function makeHandleVector() {
       const options = {
-        duration: 1000,
         easing: 'cubic-bezier(.48,.97,.72,.28)',
         fill: 'forwards',
       }
@@ -65,9 +88,10 @@ export default defineComponent({
         Z: 0,
       }
       let factor = 1
-      let verticalCount = 0
 
       return function handleVector({ x, y, i, aRad, dir }) {
+        options.duration = animationDurationMs.value
+
         let deltaXa = 0,
           deltaYa = 0,
           deltaXb = 0,
@@ -136,13 +160,6 @@ export default defineComponent({
         el.value.animate(frames, options)
         factor *= -1
       }
-    }
-
-    return {
-      el,
-      width,
-      height,
-      handleVector,
     }
   },
 })

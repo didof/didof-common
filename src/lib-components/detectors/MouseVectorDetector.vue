@@ -43,15 +43,12 @@ export default defineComponent({
     let from = [null, null]
 
     watchEffect(() => {
-      if (width.value && height.value) {
-        el.value.style.width = width.value + 'px'
-        el.value.style.height = height.value + 'px'
-      }
+      if (!width.value || !height.value) return
+      el.value.style.width = width.value + 'px'
+      el.value.style.height = height.value + 'px'
     })
 
     return {
-      width,
-      height,
       el,
       mousedown,
       mouseup,
