@@ -1,6 +1,6 @@
 <template>
   <div class="layout green">
-    <!-- <img src="@/assets/img/TwoFaces.png" class="image" /> -->
+    <img src="@/assets/img/TwoFaces.png" class="image" />
     <TwoFaces>
       <template #front>
         <div class="front" v-center>
@@ -33,6 +33,12 @@ export default defineComponent({
   align-items: center;
 }
 
+@media (orientation: portrait) {
+  .layout {
+    flex-direction: column;
+  }
+}
+
 .green {
   background: rgb(47, 121, 9);
   background: linear-gradient(
@@ -43,14 +49,8 @@ export default defineComponent({
   );
 }
 
-@media only screen and (max-width: 1024px) {
-  .layout {
-    flex-direction: column;
-  }
-}
-
 .image {
-  width: 50vw;
+  width: 60vw;
   border-radius: 20px;
 }
 
