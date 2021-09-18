@@ -12,11 +12,6 @@
 </template>
 
 <script>
-/**
- * TODO
- * auto update when size changes
- */
-
 import { defineComponent } from 'vue'
 import MultiLevel from '../MultiLevel.vue'
 

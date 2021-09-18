@@ -18,7 +18,7 @@ import {
 import { useDebounce } from '@/utils/debounce'
 
 export default defineComponent({
-  name: 'window-sizes-watcher',
+  name: 'window-sizes-provider',
   props: {
     debounce: {
       type: Boolean,

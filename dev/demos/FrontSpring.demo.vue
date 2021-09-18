@@ -1,13 +1,13 @@
 <template>
   <WindowSizesProvider>
     <div v-center v-height id="demo">
-      <FrontSprint :items="items" :gap="200">
+      <FrontSpring :items="items" :gap="200">
         <template #default="slotProps">
           <div v-box v-center>
             <img :src="slotProps.item.src" />
           </div>
         </template>
-      </FrontSprint>
+      </FrontSpring>
     </div>
   </WindowSizesProvider>
 </template>
@@ -24,7 +24,6 @@ export default defineComponent({
     const items = ref(
       [1, 2, 3, 4, 5, 6].map(index => ({
         src: `https://picsum.photos/seed/${index}/130`,
-        index,
       }))
     )
 
