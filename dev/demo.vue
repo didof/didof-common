@@ -1,14 +1,12 @@
 <template>
-  <div>
-    <div class="row blue">
+  <WindowSizesProvider>
+    <div class="blue">
       <FrontSpringDemo />
-      <img src="@/assets/img/FrontSpring.png" class="image" />
     </div>
-    <div class="row green">
-      <img src="@/assets/img/TwoFaces.png" class="image" />
+    <div class="green">
       <TwoFacesDemo />
     </div>
-  </div>
+  </WindowSizesProvider>
 </template>
 
 <script>
@@ -23,25 +21,7 @@ export default defineComponent({
 </script>
 
 <style scoped>
-.row {
-  width: 100%;
-  display: flex;
-  justify-content: space-evenly;
-  align-items: center;
-  padding: 10% 0;
-}
-
-.row.blue {
-  background: rgb(0, 212, 255);
-  background: linear-gradient(
-    90deg,
-    rgba(0, 212, 255, 1) 30%,
-    rgba(9, 15, 121, 1) 97%,
-    rgba(0, 15, 36, 1) 100%
-  );
-}
-.row.green {
-  background: rgb(47, 121, 9);
+.green {
   background: rgb(47, 121, 9);
   background: linear-gradient(
     90deg,
@@ -49,9 +29,5 @@ export default defineComponent({
     rgba(9, 121, 11, 1) 19%,
     rgba(0, 255, 38, 1) 100%
   );
-}
-
-.image {
-  max-width: 40%;
 }
 </style>

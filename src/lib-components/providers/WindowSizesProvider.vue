@@ -1,19 +1,12 @@
 <template>
-  <div v-width v-height>
+  <div>
     <slot></slot>
   </div>
 </template>
 
 <script>
 // https://andylangton.co.uk/blog/development/get-viewportwindow-size-width-and-height-javascript
-import {
-  defineComponent,
-  ref,
-  computed,
-  onMounted,
-  onBeforeUnmount,
-  provide,
-} from 'vue'
+import { defineComponent, ref, computed, onBeforeUnmount, provide } from 'vue'
 
 import { useDebounce } from '@/utils/debounce'
 
@@ -42,11 +35,9 @@ export default defineComponent({
       isVertical,
     })
 
-    const debouncedHandleResize = useDebounce(handleResize)
+    let debouncedHandleResize = useDebounce(handleResize)
 
-    onMounted(() => {
-      window.addEventListener('resize', debouncedHandleResize)
-    })
+    window.addEventListener('resize', debouncedHandleResize)
 
     onBeforeUnmount(() => {
       window.removeEventListener('resize', debouncedHandleResize)

@@ -1,16 +1,20 @@
 <template>
   <div>
-    Place here any component
+    <DeviceLayout>
+      <div>Hello</div>
+      <div>
+        <span>World</span>
+      </div>
+      <div>!</div>
+    </DeviceLayout>
   </div>
 </template>
 
 <script>
 import { defineComponent } from 'vue'
-import registerAllComponents from '@/utils/register'
 
 export default defineComponent({
   name: 'dev',
-  components: registerAllComponents(),
   setup() {},
 })
 </script>
