@@ -1,5 +1,5 @@
 <template>
-  <div class="layout">
+  <div class="layout green">
     <img src="@/assets/img/TwoFaces.png" class="image" />
     <TwoFaces>
       <template #front>
@@ -31,6 +31,16 @@ export default defineComponent({
   flex-direction: row;
   justify-content: space-evenly;
   align-items: center;
+}
+
+.green {
+  background: rgb(47, 121, 9);
+  background: linear-gradient(
+    90deg,
+    rgba(47, 121, 9, 1) 0%,
+    rgba(9, 121, 11, 1) 19%,
+    rgba(0, 255, 38, 1) 100%
+  );
 }
 
 @media only screen and (max-width: 1024px) {

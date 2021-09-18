@@ -3,6 +3,16 @@
 I like to build stuff from scratch. But it gets old after a while.
 Hence, here I'm collecting a series of Vue components & directives that I use regularly across my other projects.
 
+## Demo
+
+Clone repo and run
+
+`npm install`
+
+then
+
+`npm run demo`
+
 ## Components
 
 ### IntersectionObserver

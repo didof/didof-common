@@ -1,11 +1,7 @@
 <template>
   <WindowSizesProvider>
-    <div class="blue">
-      <FrontSpringDemo />
-    </div>
-    <div class="green">
-      <TwoFacesDemo />
-    </div>
+    <FrontSpringDemo />
+    <TwoFacesDemo />
   </WindowSizesProvider>
 </template>
 
@@ -20,14 +16,4 @@ export default defineComponent({
 })
 </script>
 
-<style scoped>
-.green {
-  background: rgb(47, 121, 9);
-  background: linear-gradient(
-    90deg,
-    rgba(47, 121, 9, 1) 0%,
-    rgba(9, 121, 11, 1) 19%,
-    rgba(0, 255, 38, 1) 100%
-  );
-}
-</style>
+<style scoped></style>
