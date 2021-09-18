@@ -13,7 +13,7 @@
 
 <script>
 import { defineComponent, ref, toRefs, watchEffect } from 'vue'
-import ScrollManager from '@/utils/ScrollManager'
+import ScrollManager from '../../utils/ScrollManager'
 
 export default defineComponent({
   name: 'mouse-vector-detector',
