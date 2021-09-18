@@ -8,11 +8,10 @@
   "unpkg": "dist/didof-common.min.js",
   "files": [
     "dist/*",
-    "src/**/*.vue"
+    "src/**/*.vue",
+    "!src/assets/*",
+    "!src/demos/*"
   ],
-  "publishConfig": {
-    "registry": "https://www.npmjs.com/package/didof-common"
-  },
   "sideEffects": false,
   "scripts": {
     "demo": "vue-cli-service serve dev/demo.js",

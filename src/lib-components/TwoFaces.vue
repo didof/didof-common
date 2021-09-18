@@ -22,15 +22,11 @@
 <script>
 import { defineComponent, ref, toRefs, onMounted, inject } from 'vue'
 
-import {
-  PerspectiveProvider,
-  MouseVectorDetector,
-  TouchVectorDetector,
-} from '@/lib-components'
+import MouseVectorDetector from './detectors/MouseVectorDetector.vue'
+import TouchVectorDetector from './detectors/TouchVectorDetector.vue'
 
 export default defineComponent({
   name: 'two-faces',
-  components: { PerspectiveProvider, MouseVectorDetector, TouchVectorDetector },
   props: {
     animationDurationMs: {
       type: Number,

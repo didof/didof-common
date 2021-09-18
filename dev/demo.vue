@@ -1,73 +1,36 @@
 <template>
-  <WindowSizesProvider>
-    <DeviceProvider>
-      <div v-center class="column">
-        <TwoFaces>
-          <template #front>
-            <div class="front" v-center>
-              front
-            </div>
-          </template>
-          <template #back>
-            <div class="back" v-center>
-              back
-            </div>
-          </template>
-        </TwoFaces>
-        <TwoFaces>
-          <template #front>
-            <div class="front" v-center>
-              front
-            </div>
-          </template>
-          <template #back>
-            <div class="back" v-center>
-              back
-            </div>
-          </template>
-        </TwoFaces>
-        <TwoFaces>
-          <template #front>
-            <div class="front" v-center>
-              front
-            </div>
-          </template>
-          <template #back>
-            <div class="back" v-center>
-              back
-            </div>
-          </template>
-        </TwoFaces>
-      </div>
-    </DeviceProvider>
-  </WindowSizesProvider>
+  <div id="app">
+    <WindowSizesProvider>
+      <DeviceProvider>
+        <FrontSpringDemo />
+        <TwoFacesDemo />
+      </DeviceProvider>
+    </WindowSizesProvider>
+  </div>
 </template>
 
 <script>
 import { defineComponent } from 'vue'
 
+import FrontSpringDemo from '@/demos/FrontSpring.demo.vue'
+import TwoFacesDemo from '@/demos/TwoFaces.demo.vue'
+
 export default defineComponent({
-  name: 'demo',
+  name: 'app',
+  components: {
+    FrontSpringDemo,
+    TwoFacesDemo,
+  },
 })
 </script>
 
-<style scoped>
-.front {
-  width: 150px;
-  background: red;
-}
+<style>
+#app {
+  font-family: Avenir, Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 
-.back {
-  height: 200px;
-  background: blue;
-}
-
-.column {
   width: 100vw;
-  height: 200vh;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  flex-direction: column;
+  height: 100%;
 }
 </style>
