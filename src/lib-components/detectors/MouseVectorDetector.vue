@@ -79,13 +79,15 @@ export default defineComponent({
     }
 
     function mouseup() {
-      el.value.style.cursor = 'grab'
       if (disabled) return
+      el.value.style.cursor = 'grab'
       active = false
+      from = [null, null]
     }
 
     function mouseleave(event) {
       if (disabled) return
+      el.value.style.cursor = 'default'
       if (active) calc(event.offsetX, event.offsetY)
       active = false
     }
