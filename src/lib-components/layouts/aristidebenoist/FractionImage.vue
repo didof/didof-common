@@ -3,7 +3,7 @@
     <img
       :src="src"
       @click="handleClick"
-      v-clickOutside="handleClickOutside"
+      v-blur="handleBlur"
       @mouseover="handleMouseOver"
       @mouseleave="handleMouseLeave"
     />
@@ -15,12 +15,13 @@ import { defineComponent, ref, toRef, toRefs, onMounted, watch } from 'vue'
 
 export default defineComponent({
   name: 'view-tmp',
+  emits: ['click', 'blur', 'mouseover', 'mouseleave'],
   props: {
     src: {
       type: String,
       required: true,
     },
-    animationDuration: {
+    transitionDuration: {
       type: Number,
       default: 1000,
     },
@@ -39,7 +40,7 @@ export default defineComponent({
     const grayScale = context.attrs.grayscale || defaultGrayScale
 
     // refs & props
-    const { animationDuration, restFraction } = toRefs(props)
+    const { transitionDuration, restFraction } = toRefs(props)
     const el = ref(null)
 
     // features
@@ -52,44 +53,54 @@ export default defineComponent({
       setShownFractionRest()
       setGrayScaleRest()
 
-      el.value.style.transition = `${animationDuration.value}ms ease-in-out`
+      el.value.style.transition = `${transitionDuration.value}ms ease-in-out`
     })
 
-    watch(animationDuration, () => {
-      el.value.style.transition = `${animationDuration.value}ms ease-in-out`
+    watch(transitionDuration, () => {
+      el.value.style.transition = `${transitionDuration.value}ms ease-in-out`
     })
 
     return {
       el,
       handleClick,
-      handleClickOutside,
+      handleBlur,
       handleMouseOver,
       handleMouseLeave,
     }
 
     function handleClick() {
-      isOpen = true
-      setShownFraction(1)
-      setGrayScale(0)
+      if (isOpen) {
+        context.emit('click')
+      } else {
+        isOpen = true
+        setShownFraction(1)
+        setGrayScale(0)
+      }
     }
 
-    function handleClickOutside() {
+    function handleBlur() {
       if (!isOpen) return
       setShownFractionRest()
       setGrayScaleRest()
+      el.value.style.cursor = 'default'
       isOpen = false
+      context.emit('blur')
     }
 
     function handleMouseOver() {
       if (isOpen) return
       setShownFraction(restFraction.value + 0.1)
       setGrayScale(grayScale - 25)
+      el.value.style.cursor = 'pointer'
+      context.emit('mouseover')
     }
 
     function handleMouseLeave() {
       if (isOpen) return
       setShownFractionRest()
       setGrayScaleRest()
+      el.value.style.cursor = 'default'
+      context.emit('mouseleave')
     }
 
     // fraction

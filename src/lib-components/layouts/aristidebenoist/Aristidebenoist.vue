@@ -2,12 +2,13 @@
   <div class="wrapper">
     <main>
       <ul>
-        <View
+        <FractionImage
           v-for="item in items"
           :key="item.key"
           :src="item.src"
           width="500"
           height="350"
+          @click="handleFractionImageClick"
         />
       </ul>
     </main>
@@ -16,11 +17,11 @@
 
 <script>
 import { defineComponent, ref, toRef, toRefs } from 'vue'
-import View from './View.vue'
+import FractionImage from './FractionImage.vue'
 
 export default defineComponent({
   name: 'aristidebenoist',
-  components: { View },
+  components: { FractionImage },
   props: {
     items: {
       type: Array,
@@ -32,6 +33,11 @@ export default defineComponent({
 
     return {
       items,
+      handleFractionImageClick,
+    }
+
+    function handleFractionImageClick() {
+      console.log('click')
     }
   },
 })
