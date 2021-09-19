@@ -29,3 +29,8 @@ export { default as DeviceProvider } from './providers/DeviceProvider.vue'
  */
 export { default as Renderer } from '../utils/Renderer'
 export { default as ScrollManager } from '../utils/ScrollManager'
+
+/**
+ * Layouts
+ */
+export { default as Aristidebenoist } from './layouts/aristidebenoist/Aristidebenoist'
