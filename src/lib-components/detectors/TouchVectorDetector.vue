@@ -13,7 +13,7 @@
 
 <script>
 import { defineComponent, ref, toRefs, watchEffect } from 'vue'
-import ScrollManager from '../../utils/ScrollManager'
+// import ScrollManager from '../../utils/ScrollManager'
 
 export default defineComponent({
   name: 'mouse-vector-detector',
@@ -66,7 +66,7 @@ export default defineComponent({
     }
 
     function touchstart({ x, y }) {
-      ScrollManager.disable()
+      // ScrollManager.disable()
 
       if (disabled) return
       active = true
@@ -74,14 +74,14 @@ export default defineComponent({
     }
 
     function touchend() {
-      ScrollManager.enable()
+      // ScrollManager.enable()
 
       if (disabled) return
       active = false
     }
 
     function touchleave({ x, y }) {
-      ScrollManager.enable()
+      // ScrollManager.enable()
 
       if (disabled) return
       if (active) calc(x, y)

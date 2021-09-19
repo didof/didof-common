@@ -7,15 +7,11 @@
   "module": "dist/didof-common.esm.js",
   "unpkg": "dist/didof-common.min.js",
   "files": [
-    "dist/*",
-    "src/**/*.vue",
-    "!src/assets/*",
-    "!src/demos/*"
+    "dist/*"
   ],
   "sideEffects": false,
   "scripts": {
-    "demo": "vue-cli-service serve dev/demo.js",
-    "dev": "vue-cli-service serve dev/dev.js",
+    "serve": "vue-cli-service serve dev/serve.js",
     "prebuild": "rimraf ./dist",
     "build": "cross-env NODE_ENV=production rollup --config build/rollup.config.js",
     "build:ssr": "cross-env NODE_ENV=production rollup --config build/rollup.config.js --format cjs",

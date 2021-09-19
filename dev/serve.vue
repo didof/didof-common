@@ -16,7 +16,7 @@ import FrontSpringDemo from '@/demos/FrontSpring.demo.vue'
 import TwoFacesDemo from '@/demos/TwoFaces.demo.vue'
 
 export default defineComponent({
-  name: 'app',
+  name: 'serve',
   components: {
     FrontSpringDemo,
     TwoFacesDemo,

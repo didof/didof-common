@@ -1,8 +1,8 @@
 import { createApp } from 'vue'
-import Demo from './demo.vue'
+import App from './serve.vue'
 import DidofCommon from '@/entry.esm'
 
-const app = createApp(Demo)
+const app = createApp(App)
 app.use(DidofCommon.components)
 app.use(DidofCommon.directives)
 
