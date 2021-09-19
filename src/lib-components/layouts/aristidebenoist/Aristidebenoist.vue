@@ -1,23 +1,25 @@
 <template>
   <div class="wrapper">
     <main>
-      <ul>
-        <FractionImage
-          v-for="item in items"
-          :key="item.key"
-          :src="item.src"
-          width="500"
-          height="350"
-          @click="handleFractionImageClick"
-        />
+      <ul ref="list">
+        <li v-for="item in items" :key="item.key">
+          <FractionImage
+            :src="item.src"
+            :width="itemsWidth"
+            height="350"
+            @click="handleFractionImageClick"
+            :restFraction="0.2"
+          />
+        </li>
       </ul>
     </main>
   </div>
 </template>
 
 <script>
-import { defineComponent, ref, toRef, toRefs } from 'vue'
+import { defineComponent, ref, toRef, toRefs, onMounted } from 'vue'
 import FractionImage from './FractionImage.vue'
+import useRenderer from '@/utils/Renderer'
 
 export default defineComponent({
   name: 'aristidebenoist',
@@ -27,12 +29,36 @@ export default defineComponent({
       type: Array,
       required: true,
     },
+    itemsWidth: {
+      type: Number,
+      default: 500,
+    },
   },
   setup(props) {
-    const { items } = toRefs(props)
+    const { items, itemsWidth } = toRefs(props)
+
+    const list = ref(null)
+
+    const renderer = useRenderer(et => {
+      console.log(et)
+    })
+
+    onMounted(() => {
+      const children = gatherChildren()
+
+      //   renderer.start()
+
+      function gatherChildren() {
+        return Array.from(list.value.childNodes).filter(
+          child => child.nodeName === 'LI'
+        )
+      }
+    })
 
     return {
+      list,
       items,
+      itemsWidth,
       handleFractionImageClick,
     }
 
@@ -67,6 +93,7 @@ main {
 }
 
 ul {
+  list-style: none;
   width: 100%;
   margin: 0;
   padding: 0;
@@ -75,6 +102,5 @@ ul {
   flex-direction: row;
   justify-content: center;
   align-items: center;
-  list-style: none;
 }
 </style>

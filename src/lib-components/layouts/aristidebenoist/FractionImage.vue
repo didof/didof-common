@@ -1,5 +1,5 @@
 <template>
-  <li ref="el">
+  <article ref="el">
     <img
       :src="src"
       @click="handleClick"
@@ -7,7 +7,7 @@
       @mouseover="handleMouseOver"
       @mouseleave="handleMouseLeave"
     />
-  </li>
+  </article>
 </template>
 
 <script>
@@ -29,10 +29,13 @@ export default defineComponent({
       type: Number,
       default: 0.2,
     },
+    width: {
+      type: Number,
+      required: true,
+    },
   },
   setup(props, context) {
     // init
-    const defaultWidth = 600
     const defaultHeight = 350
     const defaultGrayScale = 75
 
@@ -40,14 +43,14 @@ export default defineComponent({
     const grayScale = context.attrs.grayscale || defaultGrayScale
 
     // refs & props
-    const { transitionDuration, restFraction } = toRefs(props)
+    const { transitionDuration, restFraction, width } = toRefs(props)
     const el = ref(null)
 
     // features
     let isOpen = false
 
     onMounted(() => {
-      el.value.style.width = (context.attrs.width || defaultWidth) + 'px'
+      el.value.style.width = width.value + 'px'
       el.value.style.height = (context.attrs.height || defaultHeight) + 'px'
 
       setShownFractionRest()
@@ -105,11 +108,8 @@ export default defineComponent({
 
     // fraction
     function setShownFraction(fraction) {
-      const width = context.attrs.width || defaultWidth
-
-      const pxToShow = width * fraction
-
-      const pxHider = (width - pxToShow) / 2
+      const pxToShow = width.value * fraction
+      const pxHider = (width.value - pxToShow) / 2
 
       el.value.style.borderLeft = `${pxHider}px solid rgba(0, 0, 0, 0)`
       el.value.style.borderRight = `${pxHider}px solid rgba(0, 0, 0, 0)`
@@ -129,10 +129,15 @@ export default defineComponent({
     }
   },
 })
+
+/**
+ * TODO
+ * make it reactive to changes in width
+ */
 </script>
 
 <style scoped>
-li {
+article {
   position: relative;
   overflow: hidden;
   box-sizing: border-box;
