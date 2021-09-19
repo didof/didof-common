@@ -6,6 +6,7 @@
 
 <script>
 import { defineComponent, ref } from 'vue'
+import { randomColor } from '@/utils/random'
 
 export default defineComponent({
   name: 'aristidebenoist-demo',
@@ -14,7 +15,7 @@ export default defineComponent({
       Array.from(Array(12).keys()).map(int => ({
         key: 'test-' + int,
         src: require(`@/assets/test/${int + 1}.jpg`),
-        backgroundColor: 'blue',
+        backgroundColor: randomColor(),
       }))
     )
 

@@ -1,5 +1,5 @@
 <template>
-  <div class="aristidebenoist">
+  <div ref="wrapper" class="aristidebenoist">
     <main>
       <ul ref="list">
         <li v-for="(item, index) in items" :key="item.key">
@@ -45,6 +45,10 @@ export default defineComponent({
       type: Number,
       default: 750,
     },
+    defaultBackgroundColor: {
+      type: String,
+      default: 'aliceblue',
+    },
   },
   setup(props) {
     const {
@@ -53,8 +57,11 @@ export default defineComponent({
       itemsHeight,
       restFraction,
       transitionDuration,
+      defaultBackgroundColor,
     } = toRefs(props)
+
     const list = ref(null)
+    const wrapper = ref(null)
     const gap = 40
 
     let children, layouter
@@ -64,26 +71,29 @@ export default defineComponent({
     onMounted(() => {
       list.value.style.height = itemsHeight.value + 'px'
 
-      children = processChildren()
+      children = gatherChildren()
+
+      children.forEach(child => {
+        child.style.transitionDuration = transitionDuration.value + 'ms'
+      })
 
       layouter = Layouter(children)
       layouter.rest()
 
-      function processChildren() {
-        const children = Array.from(list.value.childNodes).filter(
+      // wrapper
+      wrapper.value.style.transitionDuration = transitionDuration.value + 'ms'
+      wrapper.value.style.backgroundColor = defaultBackgroundColor.value
+
+      function gatherChildren() {
+        return Array.from(list.value.childNodes).filter(
           child => child.nodeName === 'LI'
         )
-
-        children.forEach(child => {
-          child.style.transition = transitionDuration.value + 'ms'
-        })
-
-        return children
       }
     })
 
     return {
       list,
+      wrapper,
       items,
       itemsWidth,
       itemsHeight,
@@ -117,6 +127,7 @@ export default defineComponent({
       }
 
       function select(selectedIndex) {
+        // positions
         children.forEach((child, index) => {
           if (index < selectedIndex) {
             const offset = calcBaseOffset(index) - itemsWidth.value / 2
@@ -133,13 +144,22 @@ export default defineComponent({
           const offset = calcBaseOffset(index) + itemsWidth.value / 2
           setOffset(child, offset)
         })
+
+        // wrapper
+        const { backgroundColor } = items.value[selectedIndex]
+        if (backgroundColor)
+          wrapper.value.style.backgroundColor = backgroundColor
       }
 
       function rest() {
+        // positions
         children.forEach((child, index) => {
           const offset = calcBaseOffset(index)
           setOffset(child, offset)
         })
+
+        // wrapper
+        wrapper.value.style.backgroundColor = defaultBackgroundColor.value
       }
     }
   },
@@ -157,10 +177,11 @@ export default defineComponent({
 .aristidebenoist {
   width: 100vw;
   height: 100vh;
-  background: aliceblue;
 
   position: relative;
   overflow: hidden;
+
+  transition-property: background-color;
 }
 
 main {
