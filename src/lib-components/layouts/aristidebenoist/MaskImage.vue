@@ -1,70 +1,72 @@
 <template>
-  <article ref="el">
+  <div ref="mask">
     <img
+      ref="img"
       :src="src"
       @click="handleClick"
       v-blur="handleBlur"
       @mouseover="handleMouseOver"
       @mouseleave="handleMouseLeave"
     />
-  </article>
+  </div>
 </template>
 
 <script>
-import { defineComponent, ref, toRef, toRefs, onMounted, watch } from 'vue'
+import { defineComponent, ref, toRef, toRefs, onMounted } from 'vue'
 
 export default defineComponent({
-  name: 'view-tmp',
-  emits: ['click', 'blur', 'mouseover', 'mouseleave'],
+  name: 'mask-div',
   props: {
     src: {
       type: String,
       required: true,
     },
-    transitionDuration: {
+    width: {
       type: Number,
-      default: 1000,
+      required: true,
+    },
+    height: {
+      type: Number,
+      required: true,
     },
     restFraction: {
       type: Number,
       default: 0.2,
     },
-    width: {
+    transitionDuration: {
       type: Number,
-      required: true,
+      default: 1000,
     },
   },
   setup(props, context) {
-    // init
-    const defaultHeight = 350
+    const { src, width, height, restFraction, transitionDuration } = toRefs(
+      props
+    )
+    const img = ref(null)
+    const mask = ref(null)
+
+    let isOpen = false
+
     const defaultGrayScale = 75
 
     // getters
     const grayScale = context.attrs.grayscale || defaultGrayScale
 
-    // refs & props
-    const { transitionDuration, restFraction, width } = toRefs(props)
-    const el = ref(null)
-
-    // features
-    let isOpen = false
-
     onMounted(() => {
-      el.value.style.width = width.value + 'px'
-      el.value.style.height = (context.attrs.height || defaultHeight) + 'px'
+      mask.value.style.width = width.value + 'px'
+      mask.value.style.height = height.value + 'px'
 
       setShownFractionRest()
       setGrayScaleRest()
 
-      el.value.style.transition = `${transitionDuration.value}ms ease-in-out`
-    })
-
-    watch(transitionDuration, () => {
-      el.value.style.transition = `${transitionDuration.value}ms ease-in-out`
+      mask.value.style.transition = `${transitionDuration.value}ms`
+      img.value.style.transition = `${transitionDuration.value}ms`
     })
 
     return {
-      el,
+      img,
+      mask,
+      src,
       handleClick,
       handleBlur,
       handleMouseOver,
@@ -73,7 +75,7 @@ export default defineComponent({
 
     function handleClick() {
       if (isOpen) {
-        context.emit('click')
+        // context.emit('click')
       } else {
         isOpen = true
         setShownFraction(1)
@@ -85,7 +87,7 @@ export default defineComponent({
       if (!isOpen) return
       setShownFractionRest()
       setGrayScaleRest()
-      el.value.style.cursor = 'default'
+      img.value.style.cursor = 'default'
       isOpen = false
       context.emit('blur')
     }
@@ -94,7 +96,7 @@ export default defineComponent({
       if (isOpen) return
       setShownFraction(restFraction.value + 0.1)
       setGrayScale(grayScale - 25)
-      el.value.style.cursor = 'pointer'
+      img.value.style.cursor = 'pointer'
       context.emit('mouseover')
     }
 
@@ -102,17 +104,14 @@ export default defineComponent({
       if (isOpen) return
       setShownFractionRest()
       setGrayScaleRest()
-      el.value.style.cursor = 'default'
+      img.value.style.cursor = 'default'
       context.emit('mouseleave')
     }
 
     // fraction
     function setShownFraction(fraction) {
-      const pxToShow = width.value * fraction
-      const pxHider = (width.value - pxToShow) / 2
-
-      el.value.style.borderLeft = `${pxHider}px solid rgba(0, 0, 0, 0)`
-      el.value.style.borderRight = `${pxHider}px solid rgba(0, 0, 0, 0)`
+      mask.value.style.transform = `scaleX(${fraction})`
+      img.value.style.transform = `scaleX(${1 / fraction})`
     }
 
     function setShownFractionRest() {
@@ -121,7 +120,7 @@ export default defineComponent({
 
     // grayscale
     function setGrayScale(percent) {
-      el.value.style.filter = `grayscale(${percent}%)`
+      img.value.style.filter = `grayscale(${percent}%)`
     }
 
     function setGrayScaleRest() {
@@ -129,17 +128,10 @@ export default defineComponent({
     }
   },
 })
-
-/**
- * TODO
- * make it reactive to changes in width
- *
- * prova a creare i bordi su due span interni, dall'interno verso l'esterno
- */
 </script>
 
 <style scoped>
-article {
+div {
   position: relative;
   overflow: hidden;
   box-sizing: border-box;

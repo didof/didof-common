@@ -3,12 +3,11 @@
     <main>
       <ul ref="list">
         <li v-for="item in items" :key="item.key">
-          <FractionImage
+          <MaskImage
             :src="item.src"
             :width="itemsWidth"
-            height="350"
-            @click="handleFractionImageClick"
-            :restFraction="0.2"
+            :height="300"
+            :restFraction="restFraction"
           />
         </li>
       </ul>
@@ -18,12 +17,12 @@
 
 <script>
 import { defineComponent, ref, toRef, toRefs, onMounted } from 'vue'
-import FractionImage from './FractionImage.vue'
 import useRenderer from '@/utils/Renderer'
+import MaskImage from './MaskImage.vue'
 
 export default defineComponent({
   name: 'aristidebenoist',
-  components: { FractionImage },
+  components: { FractionImage, MaskImage },
   props: {
     items: {
       type: Array,
@@ -33,11 +32,16 @@ export default defineComponent({
       type: Number,
       default: 500,
     },
+    restFraction: {
+      type: Number,
+      default: 0.2,
+    },
   },
   setup(props) {
-    const { items, itemsWidth } = toRefs(props)
+    const { items, itemsWidth, restFraction } = toRefs(props)
 
     const list = ref(null)
+    const gap = ref(10)
 
     const renderer = useRenderer(et => {
       console.log(et)
@@ -59,11 +63,7 @@ export default defineComponent({
       list,
       items,
       itemsWidth,
-      handleFractionImageClick,
-    }
-
-    function handleFractionImageClick() {
-      console.log('click')
+      restFraction,
     }
   },
 })
@@ -97,10 +97,10 @@ ul {
   width: 100%;
   margin: 0;
   padding: 0;
+}
 
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  align-items: center;
+li {
+  display: inline-block;
+  width: 100px;
 }
 </style>
