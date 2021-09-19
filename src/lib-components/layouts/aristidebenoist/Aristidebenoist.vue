@@ -22,7 +22,7 @@ import MaskImage from './MaskImage.vue'
 
 export default defineComponent({
   name: 'aristidebenoist',
-  components: { FractionImage, MaskImage },
+  components: { MaskImage },
   props: {
     items: {
       type: Array,

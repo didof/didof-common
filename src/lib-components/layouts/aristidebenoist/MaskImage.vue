@@ -16,6 +16,7 @@ import { defineComponent, ref, toRef, toRefs, onMounted } from 'vue'
 
 export default defineComponent({
   name: 'mask-div',
+  emits: ['click', 'blur', 'mouseover', 'mouseleave'],
   props: {
     src: {
       type: String,
@@ -75,7 +76,7 @@ export default defineComponent({
 
     function handleClick() {
       if (isOpen) {
-        // context.emit('click')
+        context.emit('click')
       } else {
         isOpen = true
         setShownFraction(1)
