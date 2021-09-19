@@ -114,10 +114,14 @@ export default defineComponent({
     function handleSelect(index) {
       selected = index
       layouter.select(index)
+      mouseWheelDetector.unregister()
     }
 
     function handleBlur(index) {
-      if (index === selected) layouter.rest()
+      if (index === selected) {
+        layouter.rest()
+        mouseWheelDetector.register()
+      }
     }
 
     function Layouter(children) {
@@ -174,7 +178,7 @@ export default defineComponent({
 })
 
 const defaultConfig = {
-  increment: 10,
+  increment: 5,
   maxVelocity: 30,
 }
 
@@ -185,10 +189,14 @@ function makeMouseWheelDetector(el, config = defaultConfig) {
   let offset = 0
 
   const Renderer = useRenderer(et => {
+    if (acceleration === 0) return
+
     const inverse = Math.sign(acceleration) * -1
-    if (acceleration !== 0) acceleration += inverse
+    acceleration += inverse
 
     offset += acceleration * et * 3
+
+    // console.log(offset)
     el.value.style.transform = `translateX(${offset}px)`
   })
 
