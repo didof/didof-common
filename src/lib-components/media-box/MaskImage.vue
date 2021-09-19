@@ -48,15 +48,15 @@ export default defineComponent({
 
     let isOpen = false
 
-    const grayScale = context.attrs.grayscale || 90
-    // TODO use other filters too
+    const grayScaleRest = context.attrs.grayscale || 90
+    const brightnessSelected = context.attrs.brightness || 135
 
     onMounted(() => {
       mask.value.style.width = width.value + 'px'
       mask.value.style.height = height.value + 'px'
 
       setShownFractionRest()
-      setGrayScaleRest()
+      setFilters()
 
       mask.value.style.transition = `${transitionDuration.value}ms`
       img.value.style.transition = `${transitionDuration.value}ms`
@@ -84,7 +84,7 @@ export default defineComponent({
         img.value.style.transitionTimingFunction = 'ease-out'
 
         setShownFraction(1)
-        setGrayScale(0)
+        setFilters(0, brightnessSelected)
       }
     }
 
@@ -96,7 +96,7 @@ export default defineComponent({
       img.value.style.transitionTimingFunction = 'ease-in'
 
       setShownFractionRest()
-      setGrayScaleRest()
+      setFilters()
       img.value.style.cursor = 'default'
       isOpen = false
       context.emit('blur')
@@ -105,7 +105,7 @@ export default defineComponent({
     function handleMouseOver() {
       if (isOpen) return
       setShownFraction(restFraction.value + 0.05)
-      setGrayScale(grayScale - 25)
+      setFilters(grayScaleRest - 25)
       img.value.style.cursor = 'pointer'
       context.emit('mouseover')
     }
@@ -113,7 +113,7 @@ export default defineComponent({
     function handleMouseLeave() {
       if (isOpen) return
       setShownFractionRest()
-      setGrayScaleRest()
+      setFilters()
       img.value.style.cursor = 'default'
       context.emit('mouseleave')
     }
@@ -129,12 +129,8 @@ export default defineComponent({
     }
 
     // grayscale
-    function setGrayScale(percent) {
-      img.value.style.filter = `grayscale(${percent}%)`
-    }
-
-    function setGrayScaleRest() {
-      setGrayScale(grayScale)
+    function setFilters(grayscale = grayScaleRest, brightness = 100) {
+      img.value.style.filter = `grayscale(${grayscale}%) brightness(${brightness}%)`
     }
   },
 })

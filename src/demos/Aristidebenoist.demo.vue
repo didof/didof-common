@@ -11,7 +11,7 @@ export default defineComponent({
   name: 'aristidebenoist-demo',
   setup() {
     const items = ref(
-      Array.from(Array(6).keys()).map(int => ({
+      Array.from(Array(12).keys()).map(int => ({
         key: 'test-' + int,
         src: require(`@/assets/test/${int + 1}.jpg`),
       }))

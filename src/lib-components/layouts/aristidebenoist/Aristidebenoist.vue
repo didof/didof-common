@@ -1,5 +1,5 @@
 <template>
-  <div class="wrapper">
+  <div class="aristidebenoist">
     <main>
       <ul ref="list">
         <li v-for="(item, index) in items" :key="item.key">
@@ -19,12 +19,10 @@
 
 <script>
 import { defineComponent, ref, toRefs, onMounted } from 'vue'
-import MaskImage from './MaskImage.vue'
 import { useDebounce } from '@/utils/debounce'
 
 export default defineComponent({
   name: 'aristidebenoist',
-  components: { MaskImage },
   props: {
     items: {
       type: Array,
@@ -133,12 +131,13 @@ export default defineComponent({
 </script>
 
 <style scoped>
-.wrapper {
+.aristidebenoist {
   width: 100vw;
   height: 100vh;
   background: aliceblue;
 
   position: relative;
+  overflow: hidden;
 }
 
 main {
