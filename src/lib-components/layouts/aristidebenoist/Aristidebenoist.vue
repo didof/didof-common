@@ -2,7 +2,13 @@
   <div class="wrapper">
     <main>
       <ul>
-        <View v-for="item in items" :key="item.key" :src="item.src" />
+        <View
+          v-for="item in items"
+          :key="item.key"
+          :src="item.src"
+          width="500"
+          height="350"
+        />
       </ul>
     </main>
   </div>
@@ -33,6 +39,8 @@ export default defineComponent({
 /**
  * TODO
  * make it responsive to array methods
+ *
+ * allow to use both image and video
  */
 </script>
 

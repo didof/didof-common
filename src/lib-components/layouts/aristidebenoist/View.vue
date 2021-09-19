@@ -11,7 +11,7 @@
 </template>
 
 <script>
-import { defineComponent, ref, toRef, toRefs } from 'vue'
+import { defineComponent, ref, toRef, toRefs, onMounted, watch } from 'vue'
 
 export default defineComponent({
   name: 'view-tmp',
@@ -20,11 +20,39 @@ export default defineComponent({
       type: String,
       required: true,
     },
+    animationDuration: {
+      type: Number,
+      default: 1000,
+    },
+    restFraction: {
+      type: Number,
+      default: 0.2,
+    },
   },
-  setup() {
+  setup(props, context) {
+    // init
+    const defaultWidth = 600
+    const defaultHeight = 350
+
+    // refs & props
+    const { animationDuration, restFraction } = toRefs(props)
     const el = ref(null)
 
+    // features
     let isOpen = false
+
+    onMounted(() => {
+      el.value.style.width = (context.attrs.width || defaultWidth) + 'px'
+      el.value.style.height = (context.attrs.height || defaultHeight) + 'px'
+
+      setShownFractionRest()
+
+      el.value.style.transition = `${animationDuration.value}ms ease-in-out`
+    })
+
+    watch(animationDuration, () => {
+      el.value.style.transition = `${animationDuration.value}ms ease-in-out`
+    })
 
     return {
       el,
@@ -33,29 +61,29 @@ export default defineComponent({
       handleMouseOver,
       handleMouseLeave,
     }
-
     function handleClick() {
       isOpen = true
-      changeSize(1)
+      setShownFraction(1)
     }
 
     function handleClickOutside() {
+      if (!isOpen) return
+      setShownFractionRest()
       isOpen = false
-      changeSize(0.16)
     }
 
     function handleMouseOver() {
       if (isOpen) return
-      changeSize(0.2)
+      setShownFraction(restFraction.value + 0.1)
     }
 
     function handleMouseLeave() {
       if (isOpen) return
-      changeSize(0.16)
+      setShownFractionRest()
     }
 
-    function changeSize(percent) {
-      const width = el.value.getBoundingClientRect().width
+    function setShownFraction(percent) {
+      const width = context.attrs.width || defaultWidth
 
       const pxToShow = width * percent
 
@@ -64,20 +92,18 @@ export default defineComponent({
       el.value.style.borderLeft = `${pxHider}px solid rgba(0, 0, 0, 0)`
       el.value.style.borderRight = `${pxHider}px solid rgba(0, 0, 0, 0)`
     }
+
+    function setShownFractionRest() {
+      setShownFraction(restFraction.value)
+    }
   },
 })
 </script>
 
 <style scoped>
 li {
-  width: 600px;
-  height: 350px;
-  overflow: hidden;
-  transition: 1s ease-in-out;
-
   position: relative;
-  border-left: 250px solid rgba(255, 255, 255, 0);
-  border-right: 250px solid rgba(255, 255, 255, 0);
+  overflow: hidden;
   box-sizing: border-box;
 }
 
