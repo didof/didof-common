@@ -6,8 +6,9 @@
           <MaskImage
             :src="item.src"
             :width="itemsWidth"
-            :height="300"
+            :height="itemsHeight"
             :restFraction="restFraction"
+            :transitionDuration="transitionDuration"
             @selected="handleSelect(index)"
             @blur="handleBlur(index)"
           />
@@ -32,32 +33,52 @@ export default defineComponent({
       type: Number,
       default: 500,
     },
+    itemsHeight: {
+      type: Number,
+      default: 300,
+    },
     restFraction: {
       type: Number,
       default: 0.2,
     },
+    transitionDuration: {
+      type: Number,
+      default: 750,
+    },
   },
   setup(props) {
-    const { items, itemsWidth, restFraction } = toRefs(props)
+    const {
+      items,
+      itemsWidth,
+      itemsHeight,
+      restFraction,
+      transitionDuration,
+    } = toRefs(props)
     const list = ref(null)
-    const gap = ref(40)
+    const gap = 40
 
     let children, layouter
 
     let selected = null
 
     onMounted(() => {
-      children = gatherChildren()
+      list.value.style.height = itemsHeight.value + 'px'
+
+      children = processChildren()
+
       layouter = Layouter(children)
       layouter.rest()
-      children.forEach(child => {
-        child.style.transition = '1s'
-      })
 
-      function gatherChildren() {
-        return Array.from(list.value.childNodes).filter(
+      function processChildren() {
+        const children = Array.from(list.value.childNodes).filter(
           child => child.nodeName === 'LI'
         )
+
+        children.forEach(child => {
+          child.style.transition = transitionDuration.value + 'ms'
+        })
+
+        return children
       }
     })
 
@@ -65,7 +86,9 @@ export default defineComponent({
       list,
       items,
       itemsWidth,
+      itemsHeight,
       restFraction,
+      transitionDuration,
       handleSelect,
       handleBlur,
     }
@@ -86,7 +109,7 @@ export default defineComponent({
       }
 
       function calcBaseOffset(index) {
-        return itemsWidth.value * restFraction.value * index + gap.value * index
+        return itemsWidth.value * restFraction.value * index + gap * index
       }
 
       function setOffset(child, offset) {

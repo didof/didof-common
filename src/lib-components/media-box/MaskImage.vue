@@ -78,8 +78,8 @@ export default defineComponent({
       } else {
         context.emit('selected')
         isOpen = true
-        mask.value.style.transitionDelay = '300ms'
-        img.value.style.transitionDelay = '300ms'
+        mask.value.style.transitionDelay = transitionDuration.value / 3 + 'ms'
+        img.value.style.transitionDelay = transitionDuration.value / 3 + 'ms'
         mask.value.style.transitionTimingFunction = 'ease-in'
         img.value.style.transitionTimingFunction = 'ease-out'
 
