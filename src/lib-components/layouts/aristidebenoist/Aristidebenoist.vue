@@ -19,8 +19,9 @@
 </template>
 
 <script>
-import { defineComponent, ref, toRefs, onMounted } from 'vue'
+import { defineComponent, ref, toRefs, onMounted, onBeforeUnmount } from 'vue'
 import { useDebounce } from '@/utils/debounce'
+import useRenderer from '@/utils/Renderer'
 
 export default defineComponent({
   name: 'aristidebenoist',
@@ -68,6 +69,8 @@ export default defineComponent({
 
     let selected = null
 
+    const mouseWheelDetector = makeMouseWheelDetector()
+
     onMounted(() => {
       list.value.style.height = itemsHeight.value + 'px'
 
@@ -84,11 +87,17 @@ export default defineComponent({
       wrapper.value.style.transitionDuration = transitionDuration.value + 'ms'
       wrapper.value.style.backgroundColor = defaultBackgroundColor.value
 
+      mouseWheelDetector.register()
+
       function gatherChildren() {
         return Array.from(list.value.childNodes).filter(
           child => child.nodeName === 'LI'
         )
       }
+    })
+
+    onBeforeUnmount(() => {
+      mouseWheelDetector.unregister()
     })
 
     return {
@@ -164,6 +173,36 @@ export default defineComponent({
     }
   },
 })
+
+function makeMouseWheelDetector(increment = 3, maxVelocity = 10) {
+  const friction = 1
+  let acceleration = 0
+
+  const Renderer = useRenderer(et => {
+    const inverse = Math.sign(acceleration) * -1
+    if (acceleration !== 0) acceleration += inverse * friction
+  })
+
+  return {
+    register() {
+      window.addEventListener('wheel', handleMouseWheel)
+      Renderer.start()
+    },
+    unregister() {
+      window.removeEventListener('wheel', handleMouseWheel)
+      Renderer.stop()
+    },
+  }
+
+  function handleMouseWheel({ wheelDelta }) {
+    // -1 right, +1 left
+    const sign = Math.sign(wheelDelta)
+
+    let delta = increment * sign
+    if (acceleration < -maxVelocity || acceleration > +maxVelocity) return
+    acceleration += delta
+  }
+}
 
 /**
  * TODO
