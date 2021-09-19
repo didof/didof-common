@@ -33,6 +33,10 @@ export default defineComponent({
     // init
     const defaultWidth = 600
     const defaultHeight = 350
+    const defaultGrayScale = 75
+
+    // getters
+    const grayScale = context.attrs.grayscale || defaultGrayScale
 
     // refs & props
     const { animationDuration, restFraction } = toRefs(props)
@@ -46,6 +50,7 @@ export default defineComponent({
       el.value.style.height = (context.attrs.height || defaultHeight) + 'px'
 
       setShownFractionRest()
+      setGrayScaleRest()
 
       el.value.style.transition = `${animationDuration.value}ms ease-in-out`
     })
@@ -61,31 +66,37 @@ export default defineComponent({
       handleMouseOver,
       handleMouseLeave,
     }
+
     function handleClick() {
       isOpen = true
       setShownFraction(1)
+      setGrayScale(0)
     }
 
     function handleClickOutside() {
       if (!isOpen) return
       setShownFractionRest()
+      setGrayScaleRest()
       isOpen = false
     }
 
     function handleMouseOver() {
       if (isOpen) return
       setShownFraction(restFraction.value + 0.1)
+      setGrayScale(grayScale - 25)
     }
 
     function handleMouseLeave() {
       if (isOpen) return
       setShownFractionRest()
+      setGrayScaleRest()
     }
 
-    function setShownFraction(percent) {
+    // fraction
+    function setShownFraction(fraction) {
       const width = context.attrs.width || defaultWidth
 
-      const pxToShow = width * percent
+      const pxToShow = width * fraction
 
       const pxHider = (width - pxToShow) / 2
 
@@ -95,6 +106,15 @@ export default defineComponent({
 
     function setShownFractionRest() {
       setShownFraction(restFraction.value)
+    }
+
+    // grayscale
+    function setGrayScale(percent) {
+      el.value.style.filter = `grayscale(${percent}%)`
+    }
+
+    function setGrayScaleRest() {
+      setGrayScale(grayScale)
     }
   },
 })
