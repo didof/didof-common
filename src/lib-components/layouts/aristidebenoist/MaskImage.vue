@@ -12,11 +12,11 @@
 </template>
 
 <script>
-import { defineComponent, ref, toRef, toRefs, onMounted } from 'vue'
+import { defineComponent, ref, toRefs, onMounted } from 'vue'
 
 export default defineComponent({
   name: 'mask-div',
-  emits: ['click', 'blur', 'mouseover', 'mouseleave'],
+  emits: ['click', 'selected', 'blur', 'mouseover', 'mouseleave'],
   props: {
     src: {
       type: String,
@@ -48,10 +48,8 @@ export default defineComponent({
 
     let isOpen = false
 
-    const defaultGrayScale = 75
-
-    // getters
-    const grayScale = context.attrs.grayscale || defaultGrayScale
+    const grayScale = context.attrs.grayscale || 90
+    // TODO use other filters too
 
     onMounted(() => {
       mask.value.style.width = width.value + 'px'
@@ -78,7 +76,13 @@ export default defineComponent({
       if (isOpen) {
         context.emit('click')
       } else {
+        context.emit('selected')
         isOpen = true
+        mask.value.style.transitionDelay = '300ms'
+        img.value.style.transitionDelay = '300ms'
+        mask.value.style.transitionTimingFunction = 'ease-in'
+        img.value.style.transitionTimingFunction = 'ease-out'
+
         setShownFraction(1)
         setGrayScale(0)
       }
@@ -86,6 +90,11 @@ export default defineComponent({
 
     function handleBlur() {
       if (!isOpen) return
+      mask.value.style.transitionDelay = '0ms'
+      img.value.style.transitionDelay = '0ms'
+      mask.value.style.transitionTimingFunction = 'ease-out'
+      img.value.style.transitionTimingFunction = 'ease-in'
+
       setShownFractionRest()
       setGrayScaleRest()
       img.value.style.cursor = 'default'
@@ -95,7 +104,7 @@ export default defineComponent({
 
     function handleMouseOver() {
       if (isOpen) return
-      setShownFraction(restFraction.value + 0.1)
+      setShownFraction(restFraction.value + 0.05)
       setGrayScale(grayScale - 25)
       img.value.style.cursor = 'pointer'
       context.emit('mouseover')
@@ -136,6 +145,7 @@ div {
   position: relative;
   overflow: hidden;
   box-sizing: border-box;
+  transition-property: scaleX, filter;
 }
 
 img {
@@ -144,5 +154,6 @@ img {
   height: 100%;
   object-fit: cover;
   object-position: center;
+  transition-property: scaleX, filter;
 }
 </style>

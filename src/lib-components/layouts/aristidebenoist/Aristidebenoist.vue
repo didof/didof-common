@@ -2,12 +2,14 @@
   <div class="wrapper">
     <main>
       <ul ref="list">
-        <li v-for="item in items" :key="item.key">
+        <li v-for="(item, index) in items" :key="item.key">
           <MaskImage
             :src="item.src"
             :width="itemsWidth"
             :height="300"
             :restFraction="restFraction"
+            @selected="handleSelect(index)"
+            @blur="handleBlur(index)"
           />
         </li>
       </ul>
@@ -16,9 +18,9 @@
 </template>
 
 <script>
-import { defineComponent, ref, toRef, toRefs, onMounted } from 'vue'
-import useRenderer from '@/utils/Renderer'
+import { defineComponent, ref, toRefs, onMounted } from 'vue'
 import MaskImage from './MaskImage.vue'
+import { useDebounce } from '@/utils/debounce'
 
 export default defineComponent({
   name: 'aristidebenoist',
@@ -39,18 +41,20 @@ export default defineComponent({
   },
   setup(props) {
     const { items, itemsWidth, restFraction } = toRefs(props)
-
     const list = ref(null)
-    const gap = ref(10)
+    const gap = ref(40)
 
-    const renderer = useRenderer(et => {
-      console.log(et)
-    })
+    let children, layouter
+
+    let selected = null
 
     onMounted(() => {
-      const children = gatherChildren()
-
-      //   renderer.start()
+      children = gatherChildren()
+      layouter = Layouter(children)
+      layouter.rest()
+      children.forEach(child => {
+        child.style.transition = '1s'
+      })
 
       function gatherChildren() {
         return Array.from(list.value.childNodes).filter(
@@ -64,6 +68,58 @@ export default defineComponent({
       items,
       itemsWidth,
       restFraction,
+      handleSelect,
+      handleBlur,
+    }
+
+    function handleSelect(index) {
+      selected = index
+      layouter.select(index)
+    }
+
+    function handleBlur(index) {
+      if (index === selected) layouter.rest()
+    }
+
+    function Layouter(children) {
+      return {
+        rest,
+        select: useDebounce(select),
+      }
+
+      function calcBaseOffset(index) {
+        return itemsWidth.value * restFraction.value * index + gap.value * index
+      }
+
+      function setOffset(child, offset) {
+        child.style.transform = `translateX(${offset}px)`
+      }
+
+      function select(selectedIndex) {
+        children.forEach((child, index) => {
+          if (index < selectedIndex) {
+            const offset = calcBaseOffset(index) - itemsWidth.value / 2
+            setOffset(child, offset)
+            return
+          }
+
+          if (index === selectedIndex) {
+            const offset = calcBaseOffset(index)
+            setOffset(child, offset)
+            return
+          }
+
+          const offset = calcBaseOffset(index) + itemsWidth.value / 2
+          setOffset(child, offset)
+        })
+      }
+
+      function rest() {
+        children.forEach((child, index) => {
+          const offset = calcBaseOffset(index)
+          setOffset(child, offset)
+        })
+      }
     }
   },
 })
@@ -80,7 +136,7 @@ export default defineComponent({
 .wrapper {
   width: 100vw;
   height: 100vh;
-  background: grey;
+  background: aliceblue;
 
   position: relative;
 }
@@ -89,7 +145,12 @@ main {
   position: absolute;
   top: 50%;
   width: 100%;
+  height: 100%;
   transform: translateY(-50%);
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 ul {
@@ -101,6 +162,7 @@ ul {
 
 li {
   display: inline-block;
-  width: 100px;
+  max-width: 0px;
+  position: absolute;
 }
 </style>
