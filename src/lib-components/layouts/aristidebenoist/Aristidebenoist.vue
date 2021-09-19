@@ -65,11 +65,9 @@ export default defineComponent({
     const wrapper = ref(null)
     const gap = 40
 
-    let children, layouter
+    let children, layouter, mouseWheelDetector
 
     let selected = null
-
-    const mouseWheelDetector = makeMouseWheelDetector()
 
     onMounted(() => {
       list.value.style.height = itemsHeight.value + 'px'
@@ -87,6 +85,7 @@ export default defineComponent({
       wrapper.value.style.transitionDuration = transitionDuration.value + 'ms'
       wrapper.value.style.backgroundColor = defaultBackgroundColor.value
 
+      mouseWheelDetector = makeMouseWheelDetector(list)
       mouseWheelDetector.register()
 
       function gatherChildren() {
@@ -174,13 +173,23 @@ export default defineComponent({
   },
 })
 
-function makeMouseWheelDetector(increment = 3, maxVelocity = 10) {
-  const friction = 1
+const defaultConfig = {
+  increment: 10,
+  maxVelocity: 30,
+}
+
+function makeMouseWheelDetector(el, config = defaultConfig) {
+  config = Object.assign(config, defaultConfig)
+
   let acceleration = 0
+  let offset = 0
 
   const Renderer = useRenderer(et => {
     const inverse = Math.sign(acceleration) * -1
-    if (acceleration !== 0) acceleration += inverse * friction
+    if (acceleration !== 0) acceleration += inverse
+
+    offset += acceleration * et * 3
+    el.value.style.transform = `translateX(${offset}px)`
   })
 
   return {
@@ -198,8 +207,12 @@ function makeMouseWheelDetector(increment = 3, maxVelocity = 10) {
     // -1 right, +1 left
     const sign = Math.sign(wheelDelta)
 
-    let delta = increment * sign
-    if (acceleration < -maxVelocity || acceleration > +maxVelocity) return
+    let delta = config.increment * sign
+    if (
+      acceleration < -config.maxVelocity ||
+      acceleration > +config.maxVelocity
+    )
+      return
     acceleration += delta
   }
 }
@@ -240,6 +253,8 @@ ul {
   width: 100%;
   margin: 0;
   padding: 0;
+
+  transition-property: transform;
 }
 
 li {
