@@ -22,10 +22,6 @@
 </template>
 
 <script>
-/**
- * create directive to syntetically call click outside of MaskImage, it should close
- */
-
 import { defineComponent, ref, toRefs, onMounted, onBeforeUnmount } from 'vue'
 import { useDebounce } from '@/utils/debounce'
 
