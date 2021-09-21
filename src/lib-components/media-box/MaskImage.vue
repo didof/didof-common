@@ -141,7 +141,7 @@ div {
   position: relative;
   overflow: hidden;
   box-sizing: border-box;
-  transition-property: scaleX, filter;
+  transition-property: transform, filter;
 }
 
 img {
@@ -150,6 +150,6 @@ img {
   height: 100%;
   object-fit: cover;
   object-position: center;
-  transition-property: scaleX, filter;
+  transition-property: transform, filter;
 }
 </style>

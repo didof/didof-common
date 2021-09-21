@@ -133,8 +133,6 @@ export default defineComponent({
 /**
  * TODO
  * make it reactive to changes in width
- *
- * prova a creare i bordi su due span interni, dall'interno verso l'esterno
  */
 </script>
 

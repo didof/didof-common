@@ -1,21 +1,19 @@
 <template>
   <div ref="wrapper" class="aristidebenoist">
     <main>
-      <MouseWheelDetector :itemsAmount="items.length" @wheel="handleWheel">
-        <ul ref="list">
-          <li v-for="(item, index) in items" :key="item.key">
-            <MaskImage
-              :src="item.src"
-              :width="itemsWidth"
-              :height="itemsHeight"
-              :restFraction="restFraction"
-              :transitionDuration="transitionDuration"
-              @selected="handleSelect(index)"
-              @blur="handleBlur(index)"
-            />
-          </li>
-        </ul>
-      </MouseWheelDetector>
+      <ul ref="list">
+        <li v-for="(item, index) in items" :key="item.key">
+          <MaskImage
+            :src="item.src"
+            :width="itemsWidth"
+            :height="itemsHeight"
+            :restFraction="restFraction"
+            :transitionDuration="transitionDuration"
+            @selected="handleSelect(index)"
+            @blur="handleBlur(index)"
+          />
+        </li>
+      </ul>
     </main>
   </div>
 </template>
@@ -23,6 +21,7 @@
 <script>
 import { defineComponent, ref, toRefs, onMounted, onBeforeUnmount } from 'vue'
 import { useDebounce } from '@/utils/debounce'
+import useRenderer from '@/utils/Renderer'
 
 export default defineComponent({
   name: 'aristidebenoist',
@@ -33,11 +32,11 @@ export default defineComponent({
     },
     itemsWidth: {
       type: Number,
-      default: 600,
+      default: 500,
     },
     itemsHeight: {
       type: Number,
-      default: 350,
+      default: 300,
     },
     restFraction: {
       type: Number,
@@ -86,6 +85,9 @@ export default defineComponent({
       wrapper.value.style.transitionDuration = transitionDuration.value + 'ms'
       wrapper.value.style.backgroundColor = defaultBackgroundColor.value
 
+      mouseWheelDetector = makeMouseWheelDetector(list)
+      mouseWheelDetector.register()
+
       function gatherChildren() {
         return Array.from(list.value.childNodes).filter(
           child => child.nodeName === 'LI'
@@ -107,23 +109,18 @@ export default defineComponent({
       transitionDuration,
       handleSelect,
       handleBlur,
-      handleWheel,
-    }
-
-    function handleWheel(position) {
-      // TODO center the selected one
     }
 
     function handleSelect(index) {
       selected = index
       layouter.select(index)
-      layouter.updateBackgroundColor(index)
-      layouter.slideList(index)
+      mouseWheelDetector.unregister()
     }
 
     function handleBlur(index) {
       if (index === selected) {
         layouter.rest()
+        mouseWheelDetector.register()
       }
     }
 
@@ -131,8 +128,14 @@ export default defineComponent({
       return {
         rest,
         select: useDebounce(select),
-        updateBackgroundColor,
-        slideList,
+      }
+
+      function calcBaseOffset(index) {
+        return itemsWidth.value * restFraction.value * index + gap * index
+      }
+
+      function setOffset(child, offset) {
+        child.style.transform = `translateX(${offset}px)`
       }
 
       function select(selectedIndex) {
@@ -153,6 +156,11 @@ export default defineComponent({
           const offset = calcBaseOffset(index) + itemsWidth.value / 2
           setOffset(child, offset)
         })
+
+        // wrapper
+        const { backgroundColor } = items.value[selectedIndex]
+        if (backgroundColor)
+          wrapper.value.style.backgroundColor = backgroundColor
       }
 
       function rest() {
@@ -165,41 +173,68 @@ export default defineComponent({
         // wrapper
         wrapper.value.style.backgroundColor = defaultBackgroundColor.value
       }
-
-      function updateBackgroundColor(index) {
-        const { backgroundColor } = items.value[index]
-        if (backgroundColor)
-          wrapper.value.style.backgroundColor = backgroundColor
-      }
-
-      function slideList(index) {
-        const closedWidth = itemsWidth.value * restFraction.value + gap
-
-        const test =
-          closedWidth * index - (window.innerWidth - itemsWidth.value) / 2
-
-        list.value.animate([{ transform: `translateX(${-test}px)` }], {
-          duration: 750,
-          easing: 'ease-in-out',
-          fill: 'forwards',
-        })
-      }
-
-      function calcBaseOffset(index) {
-        const fraction = itemsWidth.value * restFraction.value
-
-        // const halfNotVisibleWidth = (itemsWidth.value - fraction) / 2
-        // return fraction * index + gap * index - halfNotVisibleWidth + gap
-
-        return fraction * index + gap * index
-      }
-
-      function setOffset(child, offset) {
-        child.style.transform = `translateX(${offset}px)`
-      }
     }
   },
 })
+
+const defaultConfig = {
+  increment: 5,
+  maxVelocity: 30,
+}
+
+function makeMouseWheelDetector(el, config = defaultConfig) {
+  config = Object.assign(config, defaultConfig)
+
+  let acceleration = 0
+  let offset = 0
+
+  const Renderer = useRenderer(et => {
+    if (acceleration === 0) return
+
+    const inverse = Math.sign(acceleration) * -1
+    acceleration += inverse
+
+    offset += acceleration * et * 3
+
+    // console.log(offset)
+    el.value.style.transform = `translateX(${offset}px)`
+  })
+
+  return {
+    register() {
+      el.value.addEventListener('wheel', handleMouseWheel)
+      Renderer.start()
+    },
+    unregister() {
+      el.vale.removeEventListener('wheel', handleMouseWheel)
+      Renderer.stop()
+    },
+  }
+
+  function handleMouseWheel({ wheelDelta }) {
+    // -1 right, +1 left
+    const sign = Math.sign(wheelDelta)
+
+    let delta = config.increment * sign
+    if (
+      acceleration < -config.maxVelocity ||
+      acceleration > +config.maxVelocity
+    )
+      return
+    acceleration += delta
+  }
+}
+
+/**
+ * TODO
+ * make it responsive to array methods
+ *
+ * allow to use both image and video
+ *
+ * make the scrolling smoother
+ *
+ * when selected, focus it on the center of viewport
+ */
 </script>
 
 <style scoped>

@@ -1,7 +1,5 @@
 <template>
-  <div>
-    <Aristidebenoist :items="items"> </Aristidebenoist>
-  </div>
+  <Aristidebenoist :items="items" />
 </template>
 
 <script>

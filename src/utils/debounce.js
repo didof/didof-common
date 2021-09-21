@@ -34,3 +34,25 @@ export function useDebounceLeading(func, timeout = defaultTimeout) {
     }, timeout)
   }
 }
+
+export function useThrottle(fn, timeout = defaultTimeout) {
+  let timer
+
+  return function execThrottle() {
+    if (timer) return
+
+    timer = setTimeout(() => {
+      fn()
+      timer = undefined
+    }, timeout)
+  }
+}
+
+export function useThrottleAccumulator(fn, timeout = defaultTimeout) {
+  let i = 0
+
+  return useThrottle(() => {
+    i++
+    fn
+  }, timeout)
+}

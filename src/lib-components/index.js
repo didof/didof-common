@@ -18,6 +18,7 @@ export { default as FrontSpring } from './multi-level/pre-made/FrontSpring.vue'
 export { default as IntersectionObserver } from './detectors/IntersectionObserver.vue'
 export { default as MouseVectorDetector } from './detectors/MouseVectorDetector.vue'
 export { default as TouchVectorDetector } from './detectors/TouchVectorDetector.vue'
+export { default as MouseWheelDetector } from './detectors/MouseWheelDetector.vue'
 
 /**
  * Providers
