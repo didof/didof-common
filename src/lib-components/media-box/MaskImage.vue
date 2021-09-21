@@ -70,6 +70,12 @@ export default defineComponent({
       handleBlur,
       handleMouseOver,
       handleMouseLeave,
+      forceClose,
+    }
+
+    function forceClose(cb) {
+      handleBlur()
+      setTimeout(cb, transitionDuration.value)
     }
 
     function handleClick() {

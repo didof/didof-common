@@ -10,6 +10,7 @@
               :height="itemsHeight"
               :restFraction="restFraction"
               :transitionDuration="transitionDuration"
+              :ref="setImageRef"
               @selected="handleSelect(index)"
               @blur="handleBlur(index)"
             />
@@ -21,6 +22,10 @@
 </template>
 
 <script>
+/**
+ * create directive to syntetically call click outside of MaskImage, it should close
+ */
+
 import { defineComponent, ref, toRefs, onMounted, onBeforeUnmount } from 'vue'
 import { useDebounce } from '@/utils/debounce'
 
@@ -64,6 +69,12 @@ export default defineComponent({
 
     const list = ref(null)
     const wrapper = ref(null)
+    let imageRefs = []
+    const setImageRef = el => {
+      if (!el) return
+      imageRefs.push(el)
+    }
+
     const gap = 40
 
     let children, layouter, mouseWheelDetector
@@ -108,10 +119,15 @@ export default defineComponent({
       handleSelect,
       handleBlur,
       handleWheel,
+      setImageRef,
     }
 
     function handleWheel(position) {
-      // TODO center the selected one
+      if (selected != null) {
+        imageRefs[selected].forceClose()
+        layouter.rest()
+      }
+      layouter.slideList(position)
     }
 
     function handleSelect(index) {
@@ -124,6 +140,7 @@ export default defineComponent({
     function handleBlur(index) {
       if (index === selected) {
         layouter.rest()
+        selected = null
       }
     }
 
@@ -175,10 +192,11 @@ export default defineComponent({
       function slideList(index) {
         const closedWidth = itemsWidth.value * restFraction.value + gap
 
-        const test =
+        // use injected
+        const listOffset =
           closedWidth * index - (window.innerWidth - itemsWidth.value) / 2
 
-        list.value.animate([{ transform: `translateX(${-test}px)` }], {
+        list.value.animate([{ transform: `translateX(${-listOffset}px)` }], {
           duration: 750,
           easing: 'ease-in-out',
           fill: 'forwards',
@@ -187,9 +205,6 @@ export default defineComponent({
 
       function calcBaseOffset(index) {
         const fraction = itemsWidth.value * restFraction.value
-
-        // const halfNotVisibleWidth = (itemsWidth.value - fraction) / 2
-        // return fraction * index + gap * index - halfNotVisibleWidth + gap
 
         return fraction * index + gap * index
       }
@@ -200,6 +215,11 @@ export default defineComponent({
     }
   },
 })
+
+/**
+ * TODO
+ * default itemsWidth, itemsHeight , gap based on windowSizes
+ */
 </script>
 
 <style scoped>
