@@ -1,5 +1,18 @@
 <template>
-  <Aristidebenoist :items="items" />
+  <Aristidebenoist :items="items">
+    <template #top-left>
+      <h1>title</h1>
+    </template>
+    <template #top-right>
+      <h6>about</h6>
+    </template>
+    <template #bottom-left>
+      <a href="mailto:didonato.fr@gmail.com">didof</a>
+    </template>
+    <template #bottom-right>
+      social
+    </template>
+  </Aristidebenoist>
 </template>
 
 <script>

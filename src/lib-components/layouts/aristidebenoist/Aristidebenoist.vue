@@ -1,5 +1,14 @@
 <template>
   <div ref="wrapper" class="aristidebenoist">
+    <nav class="row">
+      <div class="padding">
+        <slot name="top-left"></slot>
+      </div>
+      <div class="padding">
+        <slot name="top-right"></slot>
+      </div>
+    </nav>
+
     <main>
       <MouseWheelDetector :itemsAmount="items.length" @wheel="handleWheel">
         <ul ref="list">
@@ -18,6 +27,15 @@
         </ul>
       </MouseWheelDetector>
     </main>
+
+    <footer class="row">
+      <div class="padding">
+        <slot name="bottom-left"></slot>
+      </div>
+      <div class="padding">
+        <slot name="bottom-right"></slot>
+      </div>
+    </footer>
   </div>
 </template>
 
@@ -189,7 +207,7 @@ export default defineComponent({
           closedWidth * index - (window.innerWidth - itemsWidth.value) / 2
 
         list.value.animate([{ transform: `translateX(${-listOffset}px)` }], {
-          duration: 400,
+          duration: transitionDuration.value,
           easing: 'ease-in-out',
           fill: 'forwards',
         })
@@ -250,5 +268,26 @@ li {
   display: inline-block;
   max-width: 0px;
   position: absolute;
+}
+
+nav {
+  position: absolute;
+  top: 0;
+}
+
+footer {
+  position: absolute;
+  bottom: 0;
+}
+
+.row {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.padding {
+  padding: 20px;
 }
 </style>
