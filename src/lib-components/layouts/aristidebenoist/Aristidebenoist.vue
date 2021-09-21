@@ -22,8 +22,9 @@
 </template>
 
 <script>
-import { defineComponent, ref, toRefs, onMounted, onBeforeUnmount } from 'vue'
+import { defineComponent, ref, toRefs, onMounted } from 'vue'
 import { useDebounce } from '@/utils/debounce'
+import makeRefList from '@/utils/refList'
 
 export default defineComponent({
   name: 'aristidebenoist',
@@ -70,20 +71,16 @@ export default defineComponent({
 
     const list = ref(null)
     const wrapper = ref(null)
-    let imageRefs = []
-    const setImageRef = el => {
-      if (!el) return
-      imageRefs.push(el)
-    }
 
-    let children, layouter, mouseWheelDetector
+    const images = makeRefList()
 
+    let layouter = null
     let selected = null
 
     onMounted(() => {
       list.value.style.height = itemsHeight.value + 'px'
 
-      children = gatherChildren()
+      const children = gatherChildren()
 
       children.forEach(child => {
         child.style.transitionDuration = transitionDuration.value + 'ms'
@@ -103,10 +100,6 @@ export default defineComponent({
       }
     })
 
-    onBeforeUnmount(() => {
-      mouseWheelDetector.unregister()
-    })
-
     return {
       list,
       wrapper,
@@ -118,12 +111,12 @@ export default defineComponent({
       handleSelect,
       handleBlur,
       handleWheel,
-      setImageRef,
+      setImageRef: images.push,
     }
 
     function handleWheel(position) {
       if (selected != null) {
-        imageRefs[selected].forceClose()
+        images.refs[selected].forceClose()
         layouter.rest()
       }
       layouter.slideList(position)
@@ -191,12 +184,12 @@ export default defineComponent({
       function slideList(index) {
         const closedWidth = itemsWidth.value * restFraction.value + gap.value
 
-        // use injected
+        // TODO use injected windowSizes
         const listOffset =
           closedWidth * index - (window.innerWidth - itemsWidth.value) / 2
 
         list.value.animate([{ transform: `translateX(${-listOffset}px)` }], {
-          duration: 750,
+          duration: 400,
           easing: 'ease-in-out',
           fill: 'forwards',
         })
