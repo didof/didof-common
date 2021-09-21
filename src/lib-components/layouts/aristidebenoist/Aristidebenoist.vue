@@ -38,11 +38,15 @@ export default defineComponent({
     },
     itemsWidth: {
       type: Number,
-      default: 600,
+      default: 300,
     },
     itemsHeight: {
       type: Number,
-      default: 350,
+      default: 200,
+    },
+    gap: {
+      type: Number,
+      default: 15,
     },
     restFraction: {
       type: Number,
@@ -62,6 +66,7 @@ export default defineComponent({
       items,
       itemsWidth,
       itemsHeight,
+      gap,
       restFraction,
       transitionDuration,
       defaultBackgroundColor,
@@ -74,8 +79,6 @@ export default defineComponent({
       if (!el) return
       imageRefs.push(el)
     }
-
-    const gap = 40
 
     let children, layouter, mouseWheelDetector
 
@@ -190,7 +193,7 @@ export default defineComponent({
       }
 
       function slideList(index) {
-        const closedWidth = itemsWidth.value * restFraction.value + gap
+        const closedWidth = itemsWidth.value * restFraction.value + gap.value
 
         // use injected
         const listOffset =
@@ -206,7 +209,7 @@ export default defineComponent({
       function calcBaseOffset(index) {
         const fraction = itemsWidth.value * restFraction.value
 
-        return fraction * index + gap * index
+        return fraction * index + gap.value * index
       }
 
       function setOffset(child, offset) {
@@ -218,7 +221,7 @@ export default defineComponent({
 
 /**
  * TODO
- * default itemsWidth, itemsHeight , gap based on windowSizes
+ * default itemsWidth, itemsHeight , gap.value.value based on windowSizes
  */
 </script>
 
