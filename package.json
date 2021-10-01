@@ -1,13 +1,14 @@
 {
   "name": "didof-common",
-  "version": "1.0.3",
+  "version": "1.0.6",
   "description": "",
   "main": "dist/didof-common.ssr.js",
   "browser": "dist/didof-common.esm.js",
   "module": "dist/didof-common.esm.js",
   "unpkg": "dist/didof-common.min.js",
   "files": [
-    "dist/*"
+    "dist/*",
+    "src/**/*"
   ],
   "sideEffects": false,
   "scripts": {

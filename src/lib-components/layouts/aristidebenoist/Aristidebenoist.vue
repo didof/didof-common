@@ -229,6 +229,9 @@ export default defineComponent({
 /**
  * TODO
  * default itemsWidth, itemsHeight , gap.value.value based on windowSizes
+ *
+ * TODO
+ * activate decoration slots only if passed
  */
 </script>
 
